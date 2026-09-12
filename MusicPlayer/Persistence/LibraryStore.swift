@@ -59,6 +59,7 @@ actor LibraryStore {
         }.value
     }
 
+    /// Creates disk storage and a private Core Data context while startup runs on a worker executor.
     private init(documentsDir: URL, supportDir: URL) throws {
         self.documentsDir = documentsDir.standardizedFileURL.resolvingSymlinksInPath()
         try FileManager.default.createDirectory(at: documentsDir, withIntermediateDirectories: true)
@@ -71,7 +72,8 @@ actor LibraryStore {
                       NSPersistentStoreFileProtectionKey: FileProtectionType.completeUntilFirstUserAuthentication])
         context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         context.persistentStoreCoordinator = coordinator
-        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        // The imported global policy is mutable shared state; each store owns its own policy.
+        context.mergePolicy = NSMergePolicy(merge: .mergeByPropertyObjectTrumpMergePolicyType)
     }
 
     /// Records every observed regular file, retaining unsupported formats as inspectable pending rows.
