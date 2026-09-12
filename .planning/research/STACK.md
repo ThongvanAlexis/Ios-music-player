@@ -55,7 +55,7 @@ SFBAudioEngine 0.13.0 remains a researched fallback, not the default. It package
 
 Build the UI directly in SwiftUI. Shared theme values and assets should be consumed by concrete controls from the beginning. Do not create a framework-independent UI abstraction.
 
-Use a shared theme description for colors, surfaces, artwork slots, typography choices, and control states. Layout replacement remains a user decision. If it is selected, add a bounded layout schema rather than executing imported code. Keep accessibility names and minimum interaction sizes part of the app's controls.
+Use a shared theme description for colors, surfaces, artwork slots, typography choices, and control states. The user confirmed fixed layouts with distinctive Winamp-like and alien skins. Support replacement button states, frames, textures, slider tracks/thumbs, and icons within those fixed layouts. Keep accessibility names and minimum interaction sizes part of the app's controls. Imported themes remain JSON and images, without executable code.
 
 The eight requested destinations require a deliberate compact-phone design. Apple describes overflow behavior for standard tab bars. A custom native bottom strip, an expandable tray, or a two-row layout can preserve the user's page model; choose through a small-screen design review, not by silently replacing destinations with a generic More page. [Apple tab bar guidance](https://developer.apple.com/design/human-interface-guidelines/tab-bars)
 

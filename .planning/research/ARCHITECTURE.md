@@ -89,7 +89,7 @@ Rapidly tapping different moments can leave asynchronous preparation in flight. 
 
 The revised default uses Apple's audio engine and native scheduling, adding only reviewed official decoder sources for measured codec gaps. Centralize graph changes and audio-session lifecycle handling, and publish UI state on the main actor. Use the appropriate completion callback semantics when scheduling segments or buffers; scheduling completion is not automatically the moment the listener has heard the final sample. [Apple segment scheduling](https://developer.apple.com/documentation/avfaudio/avaudioplayernode/schedulesegment(_:startingframe:framecount:at:completionhandler:))
 
-The final passage-end policy is still pending. Keep stored region data separate from active playback policy so choosing stop, continue, or repeat does not require a new persistence schema.
+The user confirmed normal continuation through a passage end by default, with a separate moment-mode icon for repeating one bounded moment or chaining bounded moments. Keep track/folder progression, selected moment, ordered chain, and active range separate in session state. The confirmed product rules are in [PROJECT.md](../PROJECT.md#independent-playback-controls). Do not derive the normal song-end mode from the moment icon. Store saved regions independently of active playback policy; a temporary A–B range and a moment operation must not race to seek the same player.
 
 ## Files and Import Recovery
 
@@ -113,7 +113,7 @@ Keep one versioned theme schema used by the built-in theme, import, validation, 
 
 Archive intake should reject absolute paths, parent traversal, symlinks, duplicate destination paths, unsupported required schema versions, excessive extracted data, and excessively large decoded images. Validate and stage before switching the active theme. Preserve a known-good built-in fallback and an accessible way to reset it. These checks follow from accepting user-supplied archives; ZIPFoundation supplies archive operations, while the app defines allowed content. [ZIPFoundation](https://github.com/weichsel/ZIPFoundation)
 
-User selection of layout-changing themes would require a bounded schema for arrangements, control slots, and supported sizing. Styling-only themes need less machinery. Do not decide that branch before the pending answer.
+The user rejected layout-changing themes. Support distinctive artwork, textures, panel frames, icons, button states, and slider surfaces within the fixed native control layout. Do not add a general layout interpreter. A control's appearance may look organic or alien while its action and accessible interaction area remain stable.
 
 ## JSON Export and Proposed Restore
 

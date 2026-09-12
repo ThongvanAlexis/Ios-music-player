@@ -27,7 +27,7 @@ The user has no Mac. A hosted or remote macOS environment and an installation/si
 
 ### Expected Features
 
-All explicitly requested features remain in the first complete release. The priority is reliable annotated points and passages, with folder browsing as the primary library view. The requested eight destinations must stay discoverable on small screens. Research proposes restore/import alongside JSON export, but the user has not yet confirmed it. [FEATURES.md](FEATURES.md) distinguishes explicit scope from recommendations.
+All explicitly requested features remain in the first complete release. The priority is reliable annotated points and passages, with folder browsing as the primary library view. The user confirmed normal continuation through a moment by default, a separate icon for repeating/chaining bounded moments, and fixed-layout Winamp-like skins. The requested eight destinations must stay discoverable on small screens. JSON export is in the initial scope; restore/import remains a follow-up. [FEATURES.md](FEATURES.md) distinguishes explicit scope from recommendations.
 
 ### Architecture Approach
 
@@ -39,7 +39,7 @@ The most consequential failures are an unbuildable Windows-only project, notes b
 
 ## Implications for Roadmap
 
-These are proposed slices, not an approved phase structure:
+The initial roadmap proposes eight slices covering 62 requirements, with the following ordering informed by research. The actual requirement assignments and success criteria live in [ROADMAP.md](../ROADMAP.md), pending its initial review.
 
 | Suggested slice | User-visible result | Why it belongs here |
 |-----------------|---------------------|---------------------|
@@ -50,10 +50,9 @@ These are proposed slices, not an approved phase structure:
 | Playlists, song favorites, and tag browsing | Organize the same library in several ways | Reuse stable track references without copying media. |
 | Equalizer presets | Adjust sound and recall saved settings | Finish the already-proven processing integration. |
 | Imported skins and base export | Preview/apply external styles and export a reference skin | Complete the theme support introduced in the first UI work. |
-| Portable JSON data | Export the library's personal data; restore if approved | All feature models now exist and can participate in the schema. |
-| Compatibility and recovery | Use the full app reliably on the declared device range | Verify lifecycle, storage failures, diagnostics, large collections, and accessibility together. |
+| JSON export and release verification | Export personal data and use the complete app reliably on the declared device range | All feature models can participate in the export schema; verify lifecycle, storage failures, diagnostics, long recordings, and accessibility together. Restore remains a follow-up. |
 
-Final grouping should follow the chosen workflow granularity. Requested capabilities must not disappear when phases are combined.
+The combined final slice keeps the roadmap within standard granularity. Requested capabilities remain assigned explicitly rather than disappearing when phases are combined.
 
 ### Research Before Implementation
 
@@ -71,17 +70,17 @@ Final grouping should follow the chosen workflow granularity. Requested capabili
 | External dependency adoption | Pending | Resolve reported post-release codec fixes, inspect build steps and transitive code, then select an exact source revision |
 | Engine plus EQ plus MP4 | Medium | Executable format and timing experiment |
 | Core user need | High | User clearly described annotated moments and confirmed point/range support |
-| Complete requirements | Medium | Pending passage policy, theme freedom, workflow, and a few supporting-scope decisions |
+| Complete requirements | High for confirmed scope | Detailed chain transitions and implementation choices remain for phase planning |
 | Older-iPhone performance | Low until measured | Device/runtime baseline and long-file measurements |
 | Windows-to-iPhone delivery | Medium feasibility, unresolved access | Selected macOS host and signing/installation setup |
 
 ## Open Questions
 
-- Saved passage end behavior: asked, awaiting answer.
-- Theme restyling versus rearrangeable layouts: asked, awaiting answer.
-- Workflow preferences: asked, awaiting answer.
-- JSON restore/import and embedded versus custom tags: recommendations still to review.
-- Exact minimum iOS version, public/private distribution, build-host access, and signing budget.
+- Chain scope, ordering, and transition after the final passage remain for moment-control planning; default continuation and separate mode icons are confirmed.
+- Fixed-layout visual skins are confirmed; supported asset slots and control-state details remain for UI planning.
+- Workflow uses installed defaults adjusted to inherit this session's model and work sequentially; the user is not being asked to choose internal GSD settings.
+- JSON restore/import and custom tag editing are follow-ups; export and embedded metadata browsing are in the initial requirements.
+- Validate the iOS 17.0 planning baseline; public/private distribution, build-host access, and signing budget remain unresolved.
 - Any external dependency must satisfy the user's official-source, reputation, maintenance, and untrusted-repository rules; the original community-heavy recommendation was revised accordingly.
 
 ## Sources
@@ -89,4 +88,4 @@ Final grouping should follow the chosen workflow granularity. Requested capabili
 Research uses Apple documentation, versioned upstream library sources and releases, GitHub's runner documentation, and Evermusic's own feature guides. Links appear near claims in the detailed documents. The main planning constraints are supported by [Xcode requirements](https://developer.apple.com/xcode/system-requirements), [Apple audio scheduling](https://developer.apple.com/documentation/avfaudio/avaudioplayernode/schedulesegment(_:startingframe:framecount:at:completionhandler:)), [Apple directory access](https://developer.apple.com/documentation/uikit/providing-access-to-directories), [Apple background playback](https://developer.apple.com/documentation/avfoundation/configuring-your-app-for-media-playback), and [hosted macOS runners](https://docs.github.com/en/actions/concepts/runners/github-hosted-runners).
 
 ---
-*Research completed: 2026-09-12. Research is ready to inform requirements; product decisions and final roadmap remain pending.*
+*Research completed: 2026-09-12; updated after the user's playback and skin decisions. Ready to inform the initial requirements and roadmap.*

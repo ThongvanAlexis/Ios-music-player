@@ -13,12 +13,12 @@ The user's own requirements define scope. Every originally requested feature bel
 | App-owned library and folder tree | Keep a familiar, durable collection | High | Import whole hierarchies, preserve identity, handle partial failures, and keep large trees responsive. |
 | Playback and format coverage | Listen to existing files without manual conversion | High | Verify an explicit codec/container matrix before expanding the UI. |
 | Background and lock-screen playback | Keep listening while the phone is locked | High | Establish audio session, remote commands, and phone tests early. |
-| Favorite moments and passages | Remember the part and the reason | High | One note field per saved item, multiple items per song, accurate seeking, persistent references. |
+| Favorite moments and passages | Remember the part and the reason | High | One note field per saved item, multiple items per song, accurate seeking, persistent references, and independent moment playback modes. |
 | Waveform and A–B repeat | Locate and revisit musical details | High | Long-file peak caching, fine navigation, and audio-clock-based repeat behavior. |
 | Playlists and favorite songs | Organize daily listening | Medium | Ordered entries, stable track references, editing, and clear play-from-zero behavior for favorites. |
 | Tag explorer | Find music through metadata | Medium | Define whether tags mean embedded metadata, user tags, or both. |
 | Equalizer and saved presets | Reuse a preferred sound | Medium to high | Share the same processing pipeline across file formats and background playback. |
-| Imported skins and base-skin export | Make the player look personal | High | Theme-aware native components must precede the theme importer. Layout freedom is still pending. |
+| Imported skins and base-skin export | Make the player look personal | High | Theme-aware native components must precede the theme importer. Layout is fixed, with extensive image-based restyling. |
 | JSON export | Preserve personal organization and notes | Medium to high | Versioned schema, stable media references, and explicit separation from audio files. Restore is proposed, not yet confirmed. |
 
 These complexity estimates are engineering judgments for this app, not market statistics.
@@ -35,7 +35,7 @@ The user hears something memorable, taps the moment action, and saves the playba
 
 ### Return to a favorite
 
-From Favorite Moments, the user selects an item. The player resolves its track, changes the current song, and starts at the saved position. It must not briefly start at zero while waiting for a later seek. For a passage, behavior at its end is pending user input. A favorite song is a separate feature and explicitly starts at zero.
+From Favorite Moments, the user selects an item. The player resolves its track, changes the current song, and starts at the saved position. It must not briefly start at zero while waiting for a later seek. Playback continues through the passage end by default. A separate moment-mode icon can repeat a bounded moment or chain bounded moments; ordinary song/folder repeat remains a separate setting. A favorite song is a separate feature and explicitly starts at zero. The confirmed mode definitions live in [PROJECT.md](../PROJECT.md#independent-playback-controls).
 
 ### Import and browse a mix collection
 
@@ -43,7 +43,7 @@ The user selects a directory or files through the system picker. Imported audio 
 
 ### Apply a skin
 
-The user imports a ZIP, previews it, and applies it without losing their player state. Missing optional visual fields can fall back to the base theme; an invalid required schema must fail with a usable explanation. The built-in base skin must export through the same documented format used by imports. Whether skins can rearrange controls is pending.
+The user imports a ZIP, previews it, and applies it without losing their player state. Missing optional visual fields can fall back to the base theme; an invalid required schema must fail with a usable explanation. The built-in base skin must export through the same documented format used by imports. The user confirmed extensive visual skinning with fixed layouts and control positions.
 
 ## Supporting Behaviors to Propose During Requirements Review
 
@@ -77,12 +77,11 @@ The first executable slice should prove importing and playing a local track, kee
 
 Streaming subscriptions, accounts, social sharing, recommendations, lyrics downloads, CarPlay, a standalone watch app, and cloud sync were not requested. Treat them as possible future work rather than quietly adding them to the current release. DRM-protected subscription media should not be implied by support for ordinary local music files.
 
-## Decisions Still Needed
+## Follow-up Decisions
 
-- Saved passage end behavior.
-- Theme layout freedom.
-- Embedded versus custom tags.
-- JSON restore/import scope.
+- Scope and ordering of chained moments, and the transition after the final passage, during moment-control planning.
+- Embedded artist/album/genre browsing is the initial tag-view interpretation; custom tag editing remains a follow-up.
+- JSON export is in the first release; restore/import remains a tracked follow-up.
 - Public versus personal release and the Mac build/signing route.
 
 The base app name and detailed icon artwork can wait until UI planning.
