@@ -32,6 +32,18 @@ The tests are authored against real SQLite, generated PCM WAV files, the playbac
 
 The successful artifact includes the unsigned IPA, manifest, checksum, native evidence and result bundles. Failed native runs retain a separate diagnostic artifact. No signing credential is required by this workflow; the existing sideload setup signs the unsigned app at installation.
 
+From PowerShell in the repository, use the Windows launcher to retrieve the newest successful configured build:
+
+```powershell
+.\download_builds.bat
+```
+
+To choose a specific build, pass `--run-id RUN_NUMBER`, `--sha FULL_COMMIT_SHA`, or both. An explicit selection never falls back to another source. The command prints the selected full SHA and verified IPA path under `GH_builds`. Keep that directory's original manifest, reports and ZIP alongside the IPA. If a request fails, previous downloaded builds remain available; use the reported recovery steps and retry the same selection.
+
+The downloader checks the repository, workflow, branch, successful run, GitHub ZIP digest, IPA checksum, embedded app identity and native evidence before publication. It keeps the original native report and copies the selected report to `build/native-evidence.json`. The evidence command above uses `HEAD` only when that commit is the downloaded source; for a deliberately selected older build, supply its full SHA instead.
+
+Windows validation on 2026-09-12 passed 44 tooling tests, including 21 downloader tests and actual batch-launcher execution. The live launcher also retrieved and verified run `34710813866` for source `9115f759514b93a94f4f9856d986c0626ac4b3bd`, preserving the original archive and reports in `GH_builds/run-34710813866-9115f759514b-e5717d423ff1`. This verifies delivery to Windows; installation on the iPhone remains pending.
+
 | Installation evidence | Recorded result |
 |---|---|
 | Date and time in UTC | Pending |

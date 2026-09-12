@@ -24,8 +24,8 @@ jobs:
         id: configuration
         run: python3 scripts/native_check.py --ci-output
 
-      - name: Check build tooling
-        run: python3 -m unittest discover -s tests -p test_native_check.py -v
+      - name: Check build and download tooling
+        run: python3 -m unittest discover -s tests -p 'test_*.py' -v
 
       - name: Run native tests and build unsigned IPA
         run: python3 scripts/native_check.py --full --release
