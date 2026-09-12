@@ -87,6 +87,7 @@ actor PlaybackCoordinator {
         let requestGeneration = generation
         stopGraph()
         self.trackID = trackID
+        filename = nil
         confirmedPositionMilliseconds = 0
         durationMilliseconds = 0
         failure = nil
