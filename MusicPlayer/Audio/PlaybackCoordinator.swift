@@ -119,7 +119,8 @@ actor PlaybackCoordinator {
     /// Explicit Play is the only command that clears headphone-loss inhibition.
     func play() async {
         startInhibition.withLock { $0 = false }
-        if (reachedEnd || file == nil), let trackID {
+        // Read failures invalidate refill callbacks; retry must open and schedule a fresh graph.
+        if (state == .failed || reachedEnd || file == nil), let trackID {
             await select(trackID: trackID)
             return
         }

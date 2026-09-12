@@ -75,6 +75,55 @@ final class NativeTracerTests: XCTestCase {
         await player.pause()
     }
 
+    /// A retry after a changed-file read failure must reopen the file and keep refilling real audio.
+    func testExplicitPlayRecoversSustainedAudioAfterReadFailure() async throws {
+        let location = try makeLocation()
+        defer { try? FileManager.default.removeItem(at: location.rootDir) }
+        let filename = location.documentsDir.appendingPathComponent("retry.wav")
+        try makeWave(at: filename)
+        let completeData = try Data(contentsOf: filename)
+        let store = try await LibraryStore.open(documentsDir: location.documentsDir, supportDir: location.supportDir)
+        let tracks = try await store.scan()
+        let track = try XCTUnwrap(tracks.first)
+        let player = PlaybackCoordinator(store: store, outputMode: .offline)
+        await player.select(trackID: track.id)
+
+        let transfer = try FileHandle(forWritingTo: filename)
+        try transfer.seekToEnd()
+        try transfer.write(contentsOf: Data([0]))
+        try transfer.close()
+        _ = try await player.renderOffline(frameCount: AppConfiguration.bufferFrameCapacity)
+        let failureTimeoutSeconds: TimeInterval = 2
+        let pollingInterval = Duration.milliseconds(10)
+        let failureDeadline = Date().addingTimeInterval(failureTimeoutSeconds)
+        var failedSnapshot = await player.snapshot()
+        while failedSnapshot.state != .failed && Date() < failureDeadline {
+            try await Task.sleep(for: pollingInterval)
+            failedSnapshot = await player.snapshot()
+        }
+        XCTAssertEqual(failedSnapshot.state, .failed)
+        XCTAssertNotNil(failedSnapshot.failure)
+
+        try completeData.write(to: filename, options: .atomic)
+        let recoveredTracks = try await store.scan()
+        XCTAssertEqual(recoveredTracks.first?.id, track.id)
+        XCTAssertEqual(recoveredTracks.first?.readiness, .ready)
+        await player.play()
+        let recoveredSnapshot = await player.snapshot()
+        XCTAssertEqual(recoveredSnapshot.state, .playing)
+        XCTAssertNil(recoveredSnapshot.failure)
+
+        // Rendering beyond the old pool catches a retry that starts old buffers with no refill path.
+        let additionalRenderCount = 2
+        let sustainedRenderCount = AppConfiguration.maximumScheduledBufferCount + additionalRenderCount
+        for _ in 0..<sustainedRenderCount {
+            let rendered = try await player.renderOffline(frameCount: AppConfiguration.bufferFrameCapacity)
+            XCTAssertGreaterThan(rendered.peakMagnitude, 0)
+            try await Task.sleep(for: pollingInterval)
+        }
+        await player.pause()
+    }
+
     /// A declared WAV length exceeding bytes received remains pending until the closed file exists.
     func testGrowingWaveIsObservedWithoutPublishingReadyTrack() async throws {
         let location = try makeLocation()
