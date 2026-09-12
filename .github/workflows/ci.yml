@@ -1,0 +1,53 @@
+name: Native iOS build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native:
+    # Runner selection happens before checkout; tooling tests enforce agreement
+    # with build_config.json for these scheduler-only values.
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - name: Check out the triggering commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Read artifact configuration
+        id: configuration
+        run: python3 scripts/native_check.py --ci-output
+
+      - name: Check build tooling
+        run: python3 -m unittest discover -s tests -p test_native_check.py -v
+
+      - name: Run native tests and build unsigned IPA
+        run: python3 scripts/native_check.py --full --release
+
+      - name: Upload successful IPA and evidence
+        if: success()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ steps.configuration.outputs.artifactName }}
+          path: |
+            ${{ steps.configuration.outputs.artifactRelativeDir }}/
+            ${{ steps.configuration.outputs.resultRelativeDir }}/
+          if-no-files-found: error
+          retention-days: ${{ steps.configuration.outputs.retentionDays }}
+
+      - name: Upload failed run diagnostics
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: musicplayer-failed-run-${{ github.run_id }}
+          path: |
+            build/results/
+            build/native-evidence.json
+          if-no-files-found: warn
+          retention-days: ${{ steps.configuration.outputs.retentionDays }}
