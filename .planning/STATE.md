@@ -3,12 +3,12 @@ gsd_state_version: "1.0"
 milestone: v1.0
 current_phase: 01
 current_phase_name: Installable Native Player
-status: executing
-stopped_at: Completed 01-01-PLAN.md; Plan 02 next
-last_updated: "2026-09-12T18:33:54.780Z"
+status: paused
+stopped_at: 01-02-T2: verified IPA ready; awaiting physical iPhone and USB observations
+last_updated: "2026-09-12T19:04:20.397001+00:00"
 last_activity: 2026-09-12
-last_activity_desc: Plan 01 passed native tests and Release build; Plan 02 retrieval and physical observations are next.
-state_head: 9115f759514b93a94f4f9856d986c0626ac4b3bd
+last_activity_desc: Final source passed native CI and verified Windows download; phone checkpoint is ready.
+state_head: 6c7f4bbf972d8f87fa1275537e64a53158651237
 progress:
   total_phases: 8
   completed_phases: 0
@@ -23,21 +23,21 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-12)
 
 **Core value:** Save a timestamp or passage in a long mix with one personal note, then return to that exact part reliably.
-**Current focus:** Execute Plan 02 for safe Windows IPA retrieval and actual iPhone installation/USB observations. Physical headphone-loss and minimum-OS verification remain pending.
+**Current focus:** Collect the actual iPhone installation and USB observations for Plan 02 Task 2 using the prepared verified IPA. No phone result is inferred from CI.
 
 ## Current Position
 
 Phase: 01 (Installable Native Player) — IN PROGRESS
 Plan: 2 of 20
-Status: Plan 01 complete; Plan 02 ready to execute
-Last activity: 2026-09-12 — Run 34710813866 passed 9 app tests, 1 UI test and unsigned Release for source 9115f75; evidence and IPA checksum verified.
+Status: Plan 02 Task 1 complete; Task 2 paused for physical installation and USB observations
+Last activity: 2026-09-12 - Run 34712414765 passed 9 app tests, 1 UI test and unsigned Release for source 6c7f4bb; Windows launcher and HEAD evidence check passed.
 
 Progress: [░░░░░░░░░░] 5% (1 of 20 plans)
 
 ## Performance Metrics
 
 - Total plans completed: 1
-- 23 Python tooling tests passed; 9 native app tests and 1 native UI test passed.
+- 44 Windows tooling tests passed, including 21 downloader tests; 9 native app tests and 1 native UI test passed. macOS tooling passed with its two Windows-specific tests skipped.
 - Matching-source Release IPA passed; physical installation/playback and iOS 17 runtime remain pending.
 - Native test command took 155.745 seconds; app tests themselves took 4.610 seconds. Long-file memory and seek accuracy remain unmeasured.
 
@@ -91,7 +91,7 @@ See PROJECT.md for the complete record.
 
 ## Session Continuity
 
-Last session: 2026-09-12T18:29:03.614Z
-Stopped at: Completed 01-01-PLAN.md; Plan 02 next
-Resume file: .planning/phases/01-installable-native-player/01-02-PLAN.md
-Next action: Execute 01-02-PLAN.md using run 34710813866 and its exact tested source and IPA checksum. Repository commits and pushes remain authorized.
+Last session: 2026-09-12T19:04:20.397001+00:00
+Stopped at: 01-02-T2 physical iPhone installation and USB observation checkpoint
+Resume file: .planning/phases/01-installable-native-player/.continue-here.md
+Next action: User installs the prepared source 6c7f4bb IPA and supplies the numbered phone/USB results in docs/device-validation.md. Resume Task 2 from actual observations; commits and pushes remain authorized.

@@ -18,17 +18,17 @@ The tests are authored against real SQLite, generated PCM WAV files, the playbac
 
 | Build evidence | Recorded result |
 |---|---|
-| Tested source SHA | 9115f759514b93a94f4f9856d986c0626ac4b3bd |
-| Workflow run URL and run ID | https://github.com/ThongvanAlexis/Ios-music-player/actions/runs/34710813866 |
+| Tested source SHA | 6c7f4bbf972d8f87fa1275537e64a53158651237 |
+| Workflow run URL and run ID | https://github.com/ThongvanAlexis/Ios-music-player/actions/runs/34712414765 |
 | Runner image and macOS version | 20260907.0351.1; macOS 26.6.2 (25G83), arm64 |
 | Xcode version and build | 26.6 / 17F113 |
 | iPhone SDK and simulator runtime | SDK 26.5; iOS 26.5 |
 | Simulator UUID | CB15797E-6053-40B1-BB72-7F30D005A4F2 |
 | Executed native test counts | 9 passed; zero failures or skips |
 | Executed UI test counts | 1 passed; zero failures or skips |
-| Result bundle location | build/results/20260912T181909Z-51a4696bd71f46fabae01a4bbc0f0601/NativeTests.xcresult |
-| Unsigned IPA SHA-256 | d379a6dee0861a2bbf68119dc873d021dc315db6b6088214fc7f28d905a515bb |
-| Native evidence validation | Passed on Windows against HEAD at the tested source above, before documentation closeout |
+| Result bundle location | build/results/20260912T185058Z-56d7048fb7bc42729938105da2524058/NativeTests.xcresult |
+| Unsigned IPA SHA-256 | 103aef4863d92e329fd14dac20e5254f80593a583560938deaa18a8be3d719bc |
+| Native evidence validation | Passed on Windows against HEAD at the tested source above, before checkpoint documentation |
 
 The successful artifact includes the unsigned IPA, manifest, checksum, native evidence and result bundles. Failed native runs retain a separate diagnostic artifact. No signing credential is required by this workflow; the existing sideload setup signs the unsigned app at installation.
 
@@ -43,6 +43,8 @@ To choose a specific build, pass `--run-id RUN_NUMBER`, `--sha FULL_COMMIT_SHA`,
 The downloader checks the repository, workflow, branch, successful run, GitHub ZIP digest, IPA checksum, embedded app identity and native evidence before publication. It keeps the original native report and copies the selected report to `build/native-evidence.json`. The evidence command above uses `HEAD` only when that commit is the downloaded source; for a deliberately selected older build, supply its full SHA instead.
 
 Windows validation on 2026-09-12 passed 44 tooling tests, including 21 downloader tests and actual batch-launcher execution. The live launcher also retrieved and verified run `34710813866` for source `9115f759514b93a94f4f9856d986c0626ac4b3bd`, preserving the original archive and reports in `GH_builds/run-34710813866-9115f759514b-e5717d423ff1`. This verifies delivery to Windows; installation on the iPhone remains pending.
+
+The prepared phone build is now `GH_builds/run-34712414765-6c7f4bbf972d-33ba8ce83615/artifact/MusicPlayer-unsigned.ipa`, verified by the real launcher for source `6c7f4bbf972d8f87fa1275537e64a53158651237`. Its original ZIP and reports remain in that build directory. The final CI run passed 9 app tests, 1 UI test and unsigned Release; its tooling suite passed with only the two Windows-specific tests skipped on macOS. Both Windows-specific tests passed locally. Use this prepared IPA for the installation observations below.
 
 | Installation evidence | Recorded result |
 |---|---|

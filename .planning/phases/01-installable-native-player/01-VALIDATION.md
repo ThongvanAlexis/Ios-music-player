@@ -22,6 +22,11 @@ Plan 01 is complete; 19 plans remain. The initial WAV slice passed real simulato
 - Downloaded IPA SHA-256 matches manifest and report: `d379a6dee0861a2bbf68119dc873d021dc315db6b6088214fc7f28d905a515bb`. Uploaded native logs no longer contain the prior SQLite integrity/unlinked-file warnings.
 - Both Plan 01 tasks passed native/evidence checks. Updated user instructions authorize agent pushes, superseding earlier user-only-push wording. Broad requirements remain incomplete; physical and minimum-OS runtime results remain pending.
 
+- Plan 02 Task 1 passed 44 Windows tooling tests (21 downloader and 23 native-tooling tests), including actual batch execution, output limits, junction rejection, exact identity, archive checks and preservation on failure. Behavior RED was recorded before implementation in `build/01-02-red-evidence.json`; commits `fc25a2a`, `d849005`, `dfb1dfa` contain the task.
+- The real Windows launcher retrieved and verified source `9115f759514b93a94f4f9856d986c0626ac4b3bd` from run `34710813866`, then the final integrated source `6c7f4bbf972d8f87fa1275537e64a53158651237` from successful run `34712414765`. The final build is in `GH_builds/run-34712414765-6c7f4bbf972d-33ba8ce83615`; original ZIP and reports are preserved. The final naming cleanup passed its affected 21 downloader tests.
+- Final run `34712414765` passed 9 app tests, 1 UI test, zero native failures/skips and unsigned arm64 Release. Its 44 tooling tests passed with the two Windows-specific tests skipped on macOS; both passed on Windows. The downloaded evidence check against HEAD passed before checkpoint metadata commits. IPA SHA-256: `103aef4863d92e329fd14dac20e5254f80593a583560938deaa18a8be3d719bc`.
+- Plan 02 Task 2 is paused for the actual iPhone installation and USB transfer observations. A successful build/download does not satisfy those physical checks; Plan 02 and all broad requirements remain incomplete.
+
 ## Test infrastructure and command preparation
 
 | Property | Concrete planned value |
@@ -45,7 +50,7 @@ The wrapper resolves HEAD through git rev-parse, requires source identity, recor
 |---|---|---|---|---|---|
 | 01-01-T1 | 1 | APP-01, APP-02, BUILD-01, LIB-01, PLAY-01, PLAY-06, SKIN-01 | Wire one app-owned WAV from Files through real persistence and audio | `python3 scripts/native_check.py --suite NativeTracerTests --ui-suite NativeTracerUITests --release` | Passed; run 34710813866, source 9115f75, 9 app + 1 UI tests and Release |
 | 01-01-T2 | 1 | APP-01, APP-02, BUILD-01, LIB-01, PLAY-01, PLAY-06, SKIN-01 | Trigger the authorized build and collect native evidence | `python scripts/native_check.py --check-evidence build/native-evidence.json --expected-sha HEAD` | Passed before documentation commit; source 9115f75 and IPA checksum match |
-| 01-02-T1 | 2 | BUILD-01, LIB-01, APP-01 | Download the exact successful native build safely from Windows | `python -m unittest discover -s tests -p test_download_builds.py -v` | Pending |
+| 01-02-T1 | 2 | BUILD-01, LIB-01, APP-01 | Download the exact successful native build safely from Windows | `python -m unittest discover -s tests -p test_download_builds.py -v` | Passed: 21 downloader tests and real Windows retrieval |
 | 01-02-T2 | 2 | BUILD-01, LIB-01, APP-01 | Install the concrete artifact and observe Apple Devices transfers | `python scripts/native_check.py --check-evidence build/native-evidence.json --expected-sha HEAD` | Pending; user action/physical evidence required |
 | 01-03-T1 | 3 | LIB-01, PLAY-01, PLAY-07 | Reconcile transferred media and preserve the current listening session | `python3 scripts/native_check.py --suite TransferDiscoveryTests` | Pending |
 | 01-04-T1 | 4 | LIB-01, APP-02, PLAY-01 | Expose ready and pending rows with complete read-only file details | `python3 scripts/native_check.py --suite FilesOrderTests --ui-suite FilesViewTests` | Pending |
@@ -78,7 +83,7 @@ Every runnable command has its explicit failure signal in the plan's adjacent fa
 
 - [x] 01-01-T1: app/test schemes, actual disk WAV/persistence/UI tracer, pinned native wrapper, uploaded source/count/build evidence, early copyable USB revision observations.
 - [x] 01-01-T2: authorized agent push and matching successful macOS run 34710813866; original artifact/results retained.
-- [ ] 01-02-T1: subprocess fakes and safe downloader tests; manifest/checksum/result retrieval.
+- [x] 01-02-T1: subprocess fakes and safe downloader tests; manifest/checksum/result retrieval.
 - [ ] 01-02-T2: actual install/USB writer observations and any evidence-backed required workflow choice before readiness work.
 - [ ] 01-03-T1: changing-revision, failed-save, containment and idempotent scan tests.
 - [ ] 01-05-T1: bounded original-cause/persistent-history tests.
