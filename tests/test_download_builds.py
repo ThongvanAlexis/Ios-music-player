@@ -29,6 +29,7 @@ SOURCE_SHA = "a" * 40
 RUN_ID = 123
 WORKFLOW_ID = 456
 ARTIFACT_ID = 789
+API_ENDPOINT_ARGUMENT_INDEX = 2
 
 
 def run_record(identifier=RUN_ID, **changes):
@@ -121,7 +122,7 @@ class FakeRunner:
         self.calls.append((arguments, options))
         if self.failure:
             raise self.failure
-        endpoint = arguments[2]
+        endpoint = arguments[API_ENDPOINT_ARGUMENT_INDEX]
         if endpoint.endswith("/zip"):
             output = self.archive
         elif "/artifacts?" in endpoint:
@@ -205,8 +206,9 @@ class DownloadTests(unittest.TestCase):
                          (published_dir / "artifact" / CONFIG["evidenceBasename"]).read_bytes())
         self.assertEqual(self.download(runner, requested_run_id=RUN_ID), published_dir)
         self.assertEqual(self.old_filename.read_bytes(), b"previous usable IPA")
-        self.assertTrue(all(call[0][:2] == ["gh", "api"] for call in runner.calls))
-        self.assertTrue(all(call[1]["timeout"] > 0 for call in runner.calls))
+        self.assertTrue(all(arguments[:API_ENDPOINT_ARGUMENT_INDEX] == ["gh", "api"]
+                            for arguments, options in runner.calls))
+        self.assertTrue(all(options["timeout"] > 0 for arguments, options in runner.calls))
 
     def test_missing_selection_and_wrong_workflow_id_preserve_previous(self):
         for change in ({"head_sha": "b" * 40}, {"id": RUN_ID + 1}, {"workflow_id": WORKFLOW_ID + 1}):
@@ -332,8 +334,9 @@ class DownloadTests(unittest.TestCase):
         published_dir = download_builds.download_build(project_dir=self.project_dir, config=config, runner=runner,
                                                        requested_sha=SOURCE_SHA)
         self.assertTrue((published_dir / "artifact" / CONFIG["ipaBasename"]).is_file())
-        self.assertTrue(any("page=2" in call[0][2] for call in runner.calls))
-        self.assertTrue(any("head_sha=" + SOURCE_SHA in call[0][2] for call in runner.calls))
+        self.assertTrue(any("page=2" in arguments[API_ENDPOINT_ARGUMENT_INDEX] for arguments, options in runner.calls))
+        self.assertTrue(any("head_sha=" + SOURCE_SHA in arguments[API_ENDPOINT_ARGUMENT_INDEX]
+                            for arguments, options in runner.calls))
 
     def test_changed_previously_published_content_is_never_overwritten(self):
         runner = FakeRunner()
@@ -350,7 +353,7 @@ class DownloadTests(unittest.TestCase):
             error_output = io.StringIO()
             with patch.object(sys, "argv", ["download_builds.py"]), patch.object(sys, "stderr", error_output):
                 self.assertEqual(download_builds.main(), 1)
-            message = self.print_mock.call_args.args[0]
+            message, = self.print_mock.call_args.args
             self.assertIn("Download failed:", message)
             self.assertNotIn("Traceback", message)
             self.assertNotIn("secret-token", message)
@@ -403,15 +406,18 @@ class LauncherTests(unittest.TestCase):
     def test_batch_uses_own_directory_and_forwards_arguments_and_exit_status(self):
         with tempfile.TemporaryDirectory(prefix="launcher with space ") as temporary_dir:
             launcher_dir = Path(temporary_dir)
+            failure_exit_code = 7
             (launcher_dir / "download_builds.bat").write_bytes((PROJECT_DIR / "download_builds.bat").read_bytes())
             (launcher_dir / "download_builds.py").write_text(
-                "import json, os, sys\nprint(json.dumps([os.getcwd(), sys.argv[1:]]))\nsys.exit(7)\n",
+                "import json, os, sys\nargument_start_index = 1\n"
+                "print(json.dumps([os.getcwd(), sys.argv[argument_start_index:]]))\n"
+                f"sys.exit({failure_exit_code})\n",
                 encoding="utf-8")
             result = subprocess.run(["cmd.exe", "/d", "/c", str(launcher_dir / "download_builds.bat"),
                                      "--run-id", str(RUN_ID), "--sha", SOURCE_SHA],
                                     cwd=PROJECT_DIR, capture_output=True, text=True,
                                     timeout=CONFIG["timeoutByCommand"]["query"])
-            self.assertEqual(result.returncode, 7, result.stderr)
+            self.assertEqual(result.returncode, failure_exit_code, result.stderr)
             directory, arguments = json.loads(result.stdout.strip())
             self.assertEqual(Path(directory), launcher_dir)
             self.assertEqual(arguments, ["--run-id", str(RUN_ID), "--sha", SOURCE_SHA])

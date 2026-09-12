@@ -111,7 +111,8 @@ def safe_relative_path(value: str) -> PurePosixPath:
                 "Unsafe archive or report path.")
         require(not any(ord(character) < 32 or character in '<>:"|?*' for character in part),
                 "Unsafe archive or report path.")
-        require(part.split(".")[0].upper() not in WINDOWS_RESERVED_NAME_SET,
+        file_name, _, extension = part.partition(".")
+        require(file_name.upper() not in WINDOWS_RESERVED_NAME_SET,
                 "Archive path uses a Windows reserved filename.")
     return PurePosixPath(*parts)
 
