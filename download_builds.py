@@ -94,10 +94,10 @@ def select_run(run_records, requested_run_id=None, requested_sha=None, config=No
             require(created_at.tzinfo is not None, "GitHub run creation time lacks a timezone.")
         except (KeyError, ValueError, TypeError) as error:
             raise DownloadError("GitHub run creation time is invalid.") from error
-        candidates.append((created_at, record["id"], record))
+        candidates.append({"createdAt": created_at, "run": record})
     require(bool(candidates), "No matching completed successful run. Check --run-id/--sha and retry after CI succeeds; no other source was selected.")
-    candidates.sort(key=lambda candidate: candidate[:2], reverse=True)
-    return next(iter(candidates))[-1]
+    candidates.sort(key=lambda candidate: (candidate["createdAt"], candidate["run"]["id"]), reverse=True)
+    return next(iter(candidates))["run"]
 
 
 def safe_relative_path(value: str) -> PurePosixPath:
