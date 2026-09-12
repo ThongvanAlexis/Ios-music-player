@@ -40,12 +40,12 @@ The first phase has an external prerequisite: the user has no Mac access. Source
 5. Relaunch restores the prior track and position without unexpected autoplay, and errors from preparation or playback are visible rather than silently ignored.
 
 **Planning notes:** Resolve hosted/remote macOS access and signing early; neither access nor a paid account has been provisioned. Confirm the iOS 17 baseline and actual toolchain. Test Apple decoding first, then review canonical codec sources only for demonstrated gaps. Existing codec-fix concerns must be resolved before adoption. Navigation pages can initially expose honest empty states; their feature behavior arrives in the assigned later phases.
-**Plans:** 20 plans
+**Plans:** 1/20 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Native file-to-speaker tracer and first macOS build
+- [x] 01-01-PLAN.md — Native file-to-speaker tracer and first macOS build
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -267,7 +267,7 @@ Plans will be created during phase planning.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Installable Native Player | 0/20 | In progress | - |
+| 1. Installable Native Player | 1/20 | In Progress|  |
 | 2. Explorer-Style Folder Library | 0/TBD | Not started | - |
 | 3. Annotated Favorite Moments | 0/TBD | Not started | - |
 | 4. Waveform and Moment Playback Controls | 0/TBD | Not started | - |
@@ -294,4 +294,4 @@ Skins may change artwork and supported control appearance extensively but cannot
 These decisions refine accepted capabilities; they do not reopen confirmed default continuation or fixed-layout skins.
 
 ---
-*Created: 2026-09-12. Phase 1 implementation started; the first native build remains pending.*
+*Created: 2026-09-12. Phase 1 has 1 of 20 plans complete; run 34710813866 passed the initial native tests and unsigned Release build. Physical verification remains pending.*

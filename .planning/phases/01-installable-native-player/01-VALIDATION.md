@@ -1,7 +1,7 @@
 ---
 phase: "01"
 slug: installable-native-player
-status: draft
+status: in_progress
 nyquist_compliant: false
 wave_0_complete: false
 created: "2026-09-12"
@@ -9,15 +9,18 @@ created: "2026-09-12"
 
 # Phase 1 — Validation Strategy
 
-All 20 plans remain incomplete. The first app slice, native tests and build tooling are authored and locally reviewed. Xcode execution, codec measurements, installation and physical output checks remain pending.
+Plan 01 is complete; 19 plans remain. The initial WAV slice passed real simulator tests and an unsigned Release build. Codec measurements, iOS 17 runtime, installation and physical output checks remain pending.
 
 ## Execution evidence recorded on 2026-09-12
 
 - Python 3.14.3: `python -m unittest discover -s tests -p test_native_check.py -v` passed 23 tests. These exercise build tooling, copied mock evidence rejection, packaging and cross-file build configuration agreement; they do not execute Swift or prove audio behavior.
 - `python -m py_compile scripts/native_check.py tests/test_native_check.py` and `git diff --check` passed.
-- The native acceptance command exited 1 on Windows with the expected macOS/Xcode requirement. Native RED/GREEN behavior remains unrun, not passed or meaningfully failed.
-- The evidence-only command reports missing `build/native-evidence.json`. No actual macOS run or report exists yet.
-- Plan 01 is paused at its user-only push checkpoint. Task 1 source is prepared; Task 1 native acceptance and Task 2 evidence remain pending together. No requirement is marked complete.
+- Native RED-before-implementation was not executed. Windows toolchain rejection and compiler failures do not constitute intentional behavior RED; final native GREEN is recorded below.
+- Run [34710813866](https://github.com/ThongvanAlexis/Ios-music-player/actions/runs/34710813866) passed for clean source `9115f759514b93a94f4f9856d986c0626ac4b3bd`: 9 NativeTracerTests, 1 NativeTracerUITests, 0 failed/skipped; unsigned arm64 Release with minimum OS 17.0 and dark skin resources passed.
+- Toolchain: Xcode 26.6 / 17F113, SDK 26.5, Swift 6.3.3; macOS 26.6.2 / 25G83; iPhone Air simulator iOS 26.5 / 23F77. The test command took 155.745 seconds; standalone warm selected-test timing remains unmeasured.
+- Original artifact/results are preserved in `build/ci-runs/34710813866-success`; selected report is `build/native-evidence.json`. The evidence-only command with `--expected-sha HEAD` passed while HEAD was the tested source above, before closeout documentation commits.
+- Downloaded IPA SHA-256 matches manifest and report: `d379a6dee0861a2bbf68119dc873d021dc315db6b6088214fc7f28d905a515bb`. Uploaded native logs no longer contain the prior SQLite integrity/unlinked-file warnings.
+- Both Plan 01 tasks passed native/evidence checks. Updated user instructions authorize agent pushes, superseding earlier user-only-push wording. Broad requirements remain incomplete; physical and minimum-OS runtime results remain pending.
 
 ## Test infrastructure and command preparation
 
@@ -40,8 +43,8 @@ The wrapper resolves HEAD through git rev-parse, requires source identity, recor
 
 | Task | Wave | Requirement coverage | Behavior | Automated command | Status |
 |---|---|---|---|---|---|
-| 01-01-T1 | 1 | APP-01, APP-02, BUILD-01, LIB-01, PLAY-01, PLAY-06, SKIN-01 | Wire one app-owned WAV from Files through real persistence and audio | `python3 scripts/native_check.py --suite NativeTracerTests --ui-suite NativeTracerUITests --release` | Source prepared; native acceptance pending |
-| 01-01-T2 | 1 | APP-01, APP-02, BUILD-01, LIB-01, PLAY-01, PLAY-06, SKIN-01 | Have the user trigger the prepared build and collect native evidence | `python scripts/native_check.py --check-evidence build/native-evidence.json --expected-sha HEAD` | Pending; user action/physical evidence required |
+| 01-01-T1 | 1 | APP-01, APP-02, BUILD-01, LIB-01, PLAY-01, PLAY-06, SKIN-01 | Wire one app-owned WAV from Files through real persistence and audio | `python3 scripts/native_check.py --suite NativeTracerTests --ui-suite NativeTracerUITests --release` | Passed; run 34710813866, source 9115f75, 9 app + 1 UI tests and Release |
+| 01-01-T2 | 1 | APP-01, APP-02, BUILD-01, LIB-01, PLAY-01, PLAY-06, SKIN-01 | Trigger the authorized build and collect native evidence | `python scripts/native_check.py --check-evidence build/native-evidence.json --expected-sha HEAD` | Passed before documentation commit; source 9115f75 and IPA checksum match |
 | 01-02-T1 | 2 | BUILD-01, LIB-01, APP-01 | Download the exact successful native build safely from Windows | `python -m unittest discover -s tests -p test_download_builds.py -v` | Pending |
 | 01-02-T2 | 2 | BUILD-01, LIB-01, APP-01 | Install the concrete artifact and observe Apple Devices transfers | `python scripts/native_check.py --check-evidence build/native-evidence.json --expected-sha HEAD` | Pending; user action/physical evidence required |
 | 01-03-T1 | 3 | LIB-01, PLAY-01, PLAY-07 | Reconcile transferred media and preserve the current listening session | `python3 scripts/native_check.py --suite TransferDiscoveryTests` | Pending |
@@ -73,8 +76,8 @@ Every runnable command has its explicit failure signal in the plan's adjacent fa
 
 ## Initial infrastructure ownership
 
-- [ ] 01-01-T1: app/test schemes, actual disk WAV/persistence/UI tracer, pinned native wrapper, uploaded source/count/build evidence, early copyable USB revision observations.
-- [ ] 01-01-T2: user-only push and actual macOS run; no source-only success.
+- [x] 01-01-T1: app/test schemes, actual disk WAV/persistence/UI tracer, pinned native wrapper, uploaded source/count/build evidence, early copyable USB revision observations.
+- [x] 01-01-T2: authorized agent push and matching successful macOS run 34710813866; original artifact/results retained.
 - [ ] 01-02-T1: subprocess fakes and safe downloader tests; manifest/checksum/result retrieval.
 - [ ] 01-02-T2: actual install/USB writer observations and any evidence-backed required workflow choice before readiness work.
 - [ ] 01-03-T1: changing-revision, failed-save, containment and idempotent scan tests.
@@ -96,7 +99,7 @@ No third-party test package is planned. Conditional native and fixture-generatio
 
 Run affected classes after each changed behavior and the full integrated suite at each wave. Measure latency once on the actual environment; do not repeatedly broaden already successful testing without a changed scope or unresolved issue. Capture source SHA, dirty state, toolchain, destination, counts, exact command, duration and unique result path. Final delivery uses clean-source evidence and the exact same artifact hash.
 
-CI explicitly uploads build/native-evidence.json, manifest, checksum, IPA, codec report and xcresult output. Downloader validates and retains original downloaded results, then copies selected native-evidence.json to build/native-evidence.json for Windows evidence checks. A failed run may upload diagnostic test output separately but cannot masquerade as a successful IPA. Actual user-only pushes are required when source has to reach the remote runner; invoke the specified notification script only at that necessary point.
+CI uploads build/native-evidence.json, manifest, checksum, IPA and xcresult output; codec reports become required when their planned measurement work exists. Downloader retains original results, then copies selected evidence for Windows checks. Failed diagnostics cannot masquerade as a successful IPA. User instructions authorize agent pushes; notification remains for necessary physical interaction or unresolved questions.
 
 ## Physical and rendered completion conditions
 
@@ -129,10 +132,10 @@ The supplied edge report has 18 rows: 10 classified rows have explicit planned t
 - [x] Every task has a grounded automated command and adjacent observable failure statement in its plan.
 - [x] New scripts/test classes have concrete creating tasks; native evidence upload/download is explicit.
 - [x] Final plan/task/wave mapping is complete.
-- [ ] Initial infrastructure actually exists and has executed.
+- [x] Initial infrastructure actually exists and has executed.
 - [ ] Selected-test latency is measured on macOS.
 - [ ] All required native and physical results are recorded for final source.
 - [ ] All probe assumptions/prohibitions and high/critical threats have explicit verified dispositions.
 - [ ] Nyquist execution/audit has confirmed compliance.
 
-**Approval:** Planning map complete; execution and validation audit pending.
+**Approval:** Plan 01 native evidence passed; remaining execution, physical checks and validation audit pending.
