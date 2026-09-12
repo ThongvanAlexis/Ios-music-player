@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 milestone: v1.0
 current_phase: 1
 current_phase_name: Installable Native Player
-status: planning
-stopped_at: Phase 1 context gathered
-last_updated: "2026-09-12T14:46:22.411Z"
+status: executing
+stopped_at: Phase 1 planned and reviewed
+last_updated: "2026-09-12T16:43:36.868Z"
 last_activity: 2026-09-12
-last_activity_desc: Phase 1 discussion complete; context and project decisions recorded.
-state_head: bfe458a85de6c2c8d33e33920838280812f23df6
+last_activity_desc: Phase 1 planned in 20 sequential plans with 28 tasks; independent plan review passed.
+state_head: 41237b0142fb84040bb2c2a1d52f0af327030700
 progress:
   total_phases: 8
   completed_phases: 0
-  total_plans: 0
+  total_plans: 20
   completed_plans: 0
 ---
 
@@ -23,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-12)
 
 **Core value:** Save a timestamp or passage in a long mix with one personal note, then return to that exact part reliably.
-**Current focus:** Plan Phase 1 from the captured context, including the critical manual-Play rule after headphone disconnection.
+**Current focus:** Execute Phase 1, starting with the native file-to-speaker tracer and the user's required macOS build trigger. Preserve the critical manual-Play rule after headphone disconnection.
 
 ## Current Position
 
-Phase: 1 of 8 (Installable Native Player)
-Plan: Not yet planned
-Status: Ready to plan
-Last activity: 2026-09-12 - Phase 1 discussion complete; context and project decisions recorded.
+Phase: 1 (Installable Native Player) — READY TO EXECUTE
+Plan: 1 of 20 pending; 0 completed
+Status: Ready to execute
+Last activity: 2026-09-12 - Phase 1 research, UI specification, validation strategy and 20 plans completed; independent review passed with no findings.
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -61,13 +61,14 @@ See PROJECT.md for the complete record.
 
 ### Pending Todos
 
-- Discuss and plan Phase 1; do not rerun new-project from scratch.
+- Execute Phase 1 from its reviewed plans; do not rerun initialization or discussion.
 - Settle chain scope/order/completion and temporary-loop interaction when planning Phase 4.
 
 ### Blockers/Concerns
 
 - No Xcode build, simulator run, physical-device playback, or dependency installation has occurred.
-- Official decoder revision selection remains unresolved because later source fixes may be absent from published releases. See research/DEPENDENCIES.md.
+- Conditional canonical decoder revisions and relevant source fixes are recorded in phases/01-installable-native-player/01-RESEARCH.md. Apple codec measurements, recursive native build review and actual compilation remain required before adoption.
+- Actual Apple Devices transfer-completion behavior remains an early execution check. A mandatory source manifest must not be introduced without the user's workflow choice after observing the limitation.
 - Do not promote a text/source inspection result to a passing runtime check.
 - GitHub Actions macOS to unsigned IPA and existing iLoader/SideStore is selected; this project still needs its first successful build and physical iPhone installation/playback checks.
 
@@ -81,7 +82,7 @@ See PROJECT.md for the complete record.
 
 ## Session Continuity
 
-Last session: 2026-09-12T14:46:22.392Z
-Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/01-installable-native-player/01-CONTEXT.md
-Next action: Run $gsd-plan-phase 1 using .planning/phases/01-installable-native-player/01-CONTEXT.md.
+Last session: 2026-09-12T16:43:36.868Z
+Stopped at: Phase 1 planned and reviewed
+Resume file: .planning/phases/01-installable-native-player/01-01-PLAN.md
+Next action: Run $gsd-execute-phase 1.

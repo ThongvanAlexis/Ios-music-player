@@ -1,0 +1,53 @@
+{
+  "contract": "1.0.0",
+  "flavor": "core",
+  "milestone": "v1.0",
+  "phases": [
+    {
+      "number": "1",
+      "name": "Installable Native Player",
+      "status": "pending"
+    },
+    {
+      "number": "2",
+      "name": "Explorer-Style Folder Library",
+      "status": "pending"
+    },
+    {
+      "number": "3",
+      "name": "Annotated Favorite Moments",
+      "status": "pending"
+    },
+    {
+      "number": "4",
+      "name": "Waveform and Moment Playback Controls",
+      "status": "pending"
+    },
+    {
+      "number": "5",
+      "name": "Playlists, Favorite Songs, and Tags",
+      "status": "pending"
+    },
+    {
+      "number": "6",
+      "name": "Equalizer and Saved Presets",
+      "status": "pending"
+    },
+    {
+      "number": "7",
+      "name": "Winamp-Like Visual Skins",
+      "status": "pending"
+    },
+    {
+      "number": "8",
+      "name": "JSON Export and Release Verification",
+      "status": "pending"
+    }
+  ],
+  "next": {
+    "command": "/gsd:progress --next",
+    "label": "Advance to the next step",
+    "reason": "Phase 1 of 8 · executing"
+  },
+  "updated_at": "2026-09-12T16:43:36.935Z"
+}
