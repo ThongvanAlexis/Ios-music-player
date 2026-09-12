@@ -2,8 +2,6 @@
 
 import copy
 import importlib.util
-import json
-import os
 from pathlib import Path
 import plistlib
 import re
@@ -14,6 +12,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 import wave
+import xml.etree.ElementTree as ElementTree
 import zipfile
 
 
@@ -256,6 +255,22 @@ class ToolingTests(unittest.TestCase):
             pins_by_action.setdefault(action, set()).add(pin)
         self.assertEqual(set(pins_by_action), {"actions/checkout", "actions/upload-artifact"})
         self.assertTrue(all(len(pin_set) == 1 for pin_set in pins_by_action.values()))
+
+    def test_xcode_settings_agree_with_shared_build_configuration(self):
+        project = (PROJECT_DIR / CONFIG["project"] / "project.pbxproj").read_text(encoding="utf-8")
+        deployment_version_set = set(re.findall(r"IPHONEOS_DEPLOYMENT_TARGET = ([^;]+);", project))
+        self.assertEqual(deployment_version_set, {CONFIG["deploymentTarget"]})
+        identifier_set = set(re.findall(r"PRODUCT_BUNDLE_IDENTIFIER = ([^;]+);", project))
+        self.assertEqual(identifier_set, {CONFIG["bundleIdentifier"], CONFIG["bundleIdentifier"] + ".tests",
+                                          CONFIG["bundleIdentifier"] + ".uitests"})
+        scheme_filename = PROJECT_DIR / CONFIG["project"] / "xcshareddata/xcschemes" / (CONFIG["scheme"] + ".xcscheme")
+        scheme = ElementTree.parse(scheme_filename)
+        test_target_set = {suite.split("/")[0] for suite in CONFIG["requiredTestSuites"]}
+        self.assertEqual({reference.attrib["BlueprintName"] for reference in scheme.findall(".//BuildableReference")},
+                         test_target_set | {CONFIG["appName"]})
+        with (PROJECT_DIR / CONFIG["appName"] / "Info.plist").open("rb") as source:
+            info = plistlib.load(source)
+        self.assertEqual(info["BuildSourceSHA"], "$(SOURCE_COMMIT_SHA)")
 
 
 if __name__ == "__main__":

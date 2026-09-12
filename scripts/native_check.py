@@ -285,7 +285,7 @@ def run_native(arguments: argparse.Namespace, config: dict, project_dir: Path = 
         runner.run(["xcrun", "simctl", "bootstatus", simulator["udid"], "-b"], "simulator")
         derived_dir = contained_path(project_dir, config["derivedDataRelativeDir"]) / run_identifier
         common_arguments = ["xcodebuild", "-project", config["project"], "-scheme", config["scheme"],
-                            "-derivedDataPath", str(derived_dir), "-destination", destination,
+                            "-configuration", "Debug", "-derivedDataPath", str(derived_dir), "-destination", destination,
                             "-parallel-testing-enabled", "NO", "CODE_SIGNING_ALLOWED=NO",
                             f"IPHONEOS_DEPLOYMENT_TARGET={config['deploymentTarget']}",
                             f"SOURCE_COMMIT_SHA={evidence['sourceSHA']}"]
