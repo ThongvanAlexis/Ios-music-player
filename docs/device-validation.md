@@ -2,7 +2,7 @@
 
 No native build, simulator result, installation, USB transfer observation, or physical audio check has passed yet. Windows source checks and Python tooling tests do not supply those results.
 
-The prepared GitHub workflow builds the checked-in Xcode project using the toolchain in `build_config.json`. Only the user pushes repository commits. After that push, preserve the downloaded run's original artifact and validate a selected copy with:
+The prepared GitHub workflow builds the checked-in Xcode project using the toolchain in `build_config.json`. Repository instructions authorize agent pushes to trigger IPA builds. After a push, preserve the downloaded run's original artifact and validate a selected copy with:
 
 ```powershell
 python scripts/native_check.py --check-evidence build/native-evidence.json --expected-sha HEAD
@@ -14,7 +14,7 @@ The native acceptance command on macOS is:
 python3 scripts/native_check.py --suite NativeTracerTests --ui-suite NativeTracerUITests --release
 ```
 
-The tests are authored against real SQLite, generated PCM WAV files, the playback engine's actual rendered output, the transferred simulator file, and route-loss inhibition. Native RED and GREEN test executions remain pending: an unavailable Xcode command is not a failing behavior test. The source is prepared for the first macOS run, which may reveal compiler or runtime issues that require another local fix and user push.
+The tests are authored against real SQLite, generated PCM WAV files, the playback engine's actual rendered output, the transferred simulator file, and route-loss inhibition. Native RED and GREEN test executions remain pending: an unavailable Xcode command is not a failing behavior test. The first macOS run may reveal compiler or runtime issues that require another fix and push.
 
 | Build evidence | Recorded result |
 |---|---|

@@ -80,7 +80,7 @@ this is our python naming scheme, adapt for the current languge (camelcase vs sn
 don't try to abstract the UI layer, the UI layer is our top layer, it constrain us, we cannot swap it for an other ui layer, so there is no need to abstract it, we work IN the UI layer
 
 # Git
-you can commit on main, as I said I'm alone, but never push
+GH is availaible and authentified, given that github will build the ipa you are allowed to push
 
 # Dependency research and untrusted repositories
 
