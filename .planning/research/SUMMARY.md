@@ -39,7 +39,7 @@ The most consequential failures are an unbuildable Windows-only project, notes b
 
 ## Implications for Roadmap
 
-The initial roadmap proposes eight slices covering 62 requirements, with the following ordering informed by research. The actual requirement assignments and success criteria live in [ROADMAP.md](../ROADMAP.md), pending its initial review.
+The initial roadmap contains eight approved slices covering 62 requirements, with the following ordering informed by research. The actual requirement assignments and success criteria live in [ROADMAP.md](../ROADMAP.md), approved by the user on 2026-09-12.
 
 | Suggested slice | User-visible result | Why it belongs here |
 |-----------------|---------------------|---------------------|
@@ -88,4 +88,4 @@ The combined final slice keeps the roadmap within standard granularity. Requeste
 Research uses Apple documentation, versioned upstream library sources and releases, GitHub's runner documentation, and Evermusic's own feature guides. Links appear near claims in the detailed documents. The main planning constraints are supported by [Xcode requirements](https://developer.apple.com/xcode/system-requirements), [Apple audio scheduling](https://developer.apple.com/documentation/avfaudio/avaudioplayernode/schedulesegment(_:startingframe:framecount:at:completionhandler:)), [Apple directory access](https://developer.apple.com/documentation/uikit/providing-access-to-directories), [Apple background playback](https://developer.apple.com/documentation/avfoundation/configuring-your-app-for-media-playback), and [hosted macOS runners](https://docs.github.com/en/actions/concepts/runners/github-hosted-runners).
 
 ---
-*Research completed: 2026-09-12; updated after the user's playback and skin decisions. Ready to inform the initial requirements and roadmap.*
+*Research completed: 2026-09-12; incorporated into the approved initial requirements and roadmap. Dependency adoption and device validation remain pending.*
