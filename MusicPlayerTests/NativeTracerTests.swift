@@ -7,13 +7,13 @@ final class NativeTracerTests: XCTestCase {
     /// A stored identity survives reopening SQLite and points to the original Documents file.
     func testTrackIdentitySurvivesStoreReopen() async throws {
         let location = try makeLocation()
-        defer { try? FileManager.default.removeItem(at: location.rootDir) }
         try makeWave(at: location.documentsDir.appendingPathComponent("roundtrip.wav"))
-        let firstStore = try await LibraryStore.open(documentsDir: location.documentsDir, supportDir: location.supportDir)
+        let firstStore = try await openStore(documentsDir: location.documentsDir, supportDir: location.supportDir)
         let firstTracks = try await firstStore.scan()
         let firstTrack = try XCTUnwrap(firstTracks.first)
         XCTAssertEqual(firstTrack.readiness, .ready)
-        let secondStore = try await LibraryStore.open(documentsDir: location.documentsDir, supportDir: location.supportDir)
+        try await firstStore.close()
+        let secondStore = try await openStore(documentsDir: location.documentsDir, supportDir: location.supportDir)
         let reopenedTracks = try await secondStore.scan()
         XCTAssertEqual(reopenedTracks.first?.id, firstTrack.id)
         XCTAssertEqual(reopenedTracks.first?.relativeLocator, "roundtrip.wav")
@@ -24,8 +24,7 @@ final class NativeTracerTests: XCTestCase {
     /// An empty installation has no synthetic rows or automatic playback.
     func testEmptyLibraryAndNewPlayerAreSilent() async throws {
         let location = try makeLocation()
-        defer { try? FileManager.default.removeItem(at: location.rootDir) }
-        let store = try await LibraryStore.open(documentsDir: location.documentsDir, supportDir: location.supportDir)
+        let store = try await openStore(documentsDir: location.documentsDir, supportDir: location.supportDir)
         let tracks = try await store.scan()
         XCTAssertTrue(tracks.isEmpty)
         let player = PlaybackCoordinator(store: store, outputMode: .offline)
@@ -37,9 +36,8 @@ final class NativeTracerTests: XCTestCase {
     /// Audio must cross the production player node into the engine's actual output buffer.
     func testSelectedWaveRendersNonzeroPCMAndAdvancesTime() async throws {
         let location = try makeLocation()
-        defer { try? FileManager.default.removeItem(at: location.rootDir) }
         try makeWave(at: location.documentsDir.appendingPathComponent("render.wav"))
-        let store = try await LibraryStore.open(documentsDir: location.documentsDir, supportDir: location.supportDir)
+        let store = try await openStore(documentsDir: location.documentsDir, supportDir: location.supportDir)
         let tracks = try await store.scan()
         let track = try XCTUnwrap(tracks.first)
         let player = PlaybackCoordinator(store: store, outputMode: .offline)
@@ -55,9 +53,8 @@ final class NativeTracerTests: XCTestCase {
     /// Selection and stale completion paths cannot clear a loss; explicit Play is required.
     func testRouteLossInhibitsSelectionUntilExplicitPlay() async throws {
         let location = try makeLocation()
-        defer { try? FileManager.default.removeItem(at: location.rootDir) }
         try makeWave(at: location.documentsDir.appendingPathComponent("loss.wav"))
-        let store = try await LibraryStore.open(documentsDir: location.documentsDir, supportDir: location.supportDir)
+        let store = try await openStore(documentsDir: location.documentsDir, supportDir: location.supportDir)
         let tracks = try await store.scan()
         let track = try XCTUnwrap(tracks.first)
         let player = PlaybackCoordinator(store: store, outputMode: .offline)
@@ -78,11 +75,10 @@ final class NativeTracerTests: XCTestCase {
     /// A retry after a changed-file read failure must reopen the file and keep refilling real audio.
     func testExplicitPlayRecoversSustainedAudioAfterReadFailure() async throws {
         let location = try makeLocation()
-        defer { try? FileManager.default.removeItem(at: location.rootDir) }
         let filename = location.documentsDir.appendingPathComponent("retry.wav")
         try makeWave(at: filename)
         let completeData = try Data(contentsOf: filename)
-        let store = try await LibraryStore.open(documentsDir: location.documentsDir, supportDir: location.supportDir)
+        let store = try await openStore(documentsDir: location.documentsDir, supportDir: location.supportDir)
         let tracks = try await store.scan()
         let track = try XCTUnwrap(tracks.first)
         let player = PlaybackCoordinator(store: store, outputMode: .offline)
@@ -127,7 +123,6 @@ final class NativeTracerTests: XCTestCase {
     /// A declared WAV length exceeding bytes received remains pending until the closed file exists.
     func testGrowingWaveIsObservedWithoutPublishingReadyTrack() async throws {
         let location = try makeLocation()
-        defer { try? FileManager.default.removeItem(at: location.rootDir) }
         let filename = location.documentsDir.appendingPathComponent("growing.wav")
         try makeWave(at: filename)
         let completeData = try Data(contentsOf: filename)
@@ -138,7 +133,7 @@ final class NativeTracerTests: XCTestCase {
             frameCapacity: AppConfiguration.bufferFrameCapacity))
         try prefixFile.read(into: prefixBuffer)
         XCTAssertGreaterThan(prefixBuffer.frameLength, 0, "The fixture must be decodable despite missing intended trailing bytes")
-        let store = try await LibraryStore.open(documentsDir: location.documentsDir, supportDir: location.supportDir)
+        let store = try await openStore(documentsDir: location.documentsDir, supportDir: location.supportDir)
         let pendingTracks = try await store.scan()
         let pending = try XCTUnwrap(pendingTracks.first)
         XCTAssertEqual(pending.readiness, .pending)
@@ -152,7 +147,6 @@ final class NativeTracerTests: XCTestCase {
     /// A parseable prefix says nothing about the intended source length for unsupported formats.
     func testDecodablePrefixObservationDoesNotProveMP3Completion() async throws {
         let location = try makeLocation()
-        defer { try? FileManager.default.removeItem(at: location.rootDir) }
         // A complete MPEG-1 Layer III silent frame is independently parseable but may only be a prefix.
         let header = Data([0xFF, 0xFB, 0x90, 0x64])
         let frameByteCount = 417
@@ -160,7 +154,7 @@ final class NativeTracerTests: XCTestCase {
         frame.append(Data(repeating: 0, count: frameByteCount - header.count))
         let filename = location.documentsDir.appendingPathComponent("prefix.mp3")
         try frame.write(to: filename)
-        let store = try await LibraryStore.open(documentsDir: location.documentsDir, supportDir: location.supportDir)
+        let store = try await openStore(documentsDir: location.documentsDir, supportDir: location.supportDir)
         let tracks = try await store.scan()
         let track = try XCTUnwrap(tracks.first)
         XCTAssertEqual(track.readiness, .pending)
@@ -173,8 +167,7 @@ final class NativeTracerTests: XCTestCase {
     /// A relative locator cannot escape Documents through parent segments or a symbolic link.
     func testFileContainmentRejectsEscapes() async throws {
         let location = try makeLocation()
-        defer { try? FileManager.default.removeItem(at: location.rootDir) }
-        let store = try await LibraryStore.open(documentsDir: location.documentsDir, supportDir: location.supportDir)
+        let store = try await openStore(documentsDir: location.documentsDir, supportDir: location.supportDir)
         do {
             _ = try await store.resolve(relativeLocator: "../outside.wav")
             XCTFail("Parent traversal was accepted")
@@ -207,7 +200,18 @@ final class NativeTracerTests: XCTestCase {
         let documentsDir = rootDir.appendingPathComponent("Documents")
         let supportDir = rootDir.appendingPathComponent("Application Support")
         try FileManager.default.createDirectory(at: documentsDir, withIntermediateDirectories: true)
+        // XCTest runs these blocks in reverse order, after every registered store has closed.
+        addTeardownBlock { () async throws in
+            try FileManager.default.removeItem(at: rootDir)
+        }
         return (rootDir, documentsDir, supportDir)
+    }
+
+    /// Registers shutdown as soon as a store opens so throwing tests also release every SQLite handle.
+    private func openStore(documentsDir: URL, supportDir: URL) async throws -> LibraryStore {
+        let store = try await LibraryStore.open(documentsDir: documentsDir, supportDir: supportDir)
+        addTeardownBlock { try await store.close() }
+        return store
     }
 
     /// Writes a real closed PCM container whose samples are large enough to detect a silent graph.

@@ -59,6 +59,17 @@ actor LibraryStore {
         }.value
     }
 
+    /// Releases SQLite and its journal handles before temporary storage is removed; repeated closes are safe.
+    func close() throws {
+        try context.performAndWait {
+            context.reset()
+            let persistentStores = coordinator.persistentStores
+            for persistentStore in persistentStores {
+                try coordinator.remove(persistentStore)
+            }
+        }
+    }
+
     /// Creates disk storage and a private Core Data context while startup runs on a worker executor.
     private init(documentsDir: URL, supportDir: URL) throws {
         self.documentsDir = documentsDir.standardizedFileURL.resolvingSymlinksInPath()
