@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "name": "Dark",
+  "appearanceByRole": {
+    "page": {"color": "101318"},
+    "panel": {"color": "1B2028"},
+    "controlSurface": {"color": "202733", "image": "control-surface.png"},
+    "primaryText": {"color": "F5F7FA"},
+    "secondaryText": {"color": "B8C1CF"},
+    "accent": {"color": "79BCFF"},
+    "errorPanel": {"color": "42282D"}
+  }
+}

@@ -1,2 +1,7 @@
 /ref_pics/
 /.planning/research/.cache/
+/build/
+__pycache__/
+*.pyc
+DerivedData/
+xcuserdata/

@@ -1,0 +1,259 @@
+// !$*UTF8*$!
+{
+    archiveVersion = 1;
+    classes = {};
+    objectVersion = 77;
+    objects = {
+        A00000000000000000000001 = {
+            isa = PBXProject;
+            attributes = {
+                BuildIndependentTargetsInParallel = 1;
+                LastSwiftUpdateCheck = 2660;
+                LastUpgradeCheck = 2660;
+                TargetAttributes = {
+                    A00000000000000000000010 = { CreatedOnToolsVersion = 26.6; };
+                    A00000000000000000000011 = { CreatedOnToolsVersion = 26.6; TestTargetID = A00000000000000000000010; };
+                    A00000000000000000000012 = { CreatedOnToolsVersion = 26.6; TestTargetID = A00000000000000000000010; };
+                };
+            };
+            buildConfigurationList = A00000000000000000000050;
+            compatibilityVersion = "Xcode 16.0";
+            developmentRegion = en;
+            hasScannedForEncodings = 0;
+            knownRegions = (en, Base);
+            mainGroup = A00000000000000000000002;
+            minimizedProjectReferenceProxies = 1;
+            preferredProjectObjectVersion = 77;
+            productRefGroup = A00000000000000000000003;
+            projectDirPath = "";
+            projectRoot = "";
+            targets = (A00000000000000000000010, A00000000000000000000011, A00000000000000000000012);
+        };
+        A00000000000000000000002 = {
+            isa = PBXGroup;
+            children = (A00000000000000000000004, A00000000000000000000005, A00000000000000000000006, A00000000000000000000007, A00000000000000000000003);
+            sourceTree = "<group>";
+        };
+        A00000000000000000000003 = {
+            isa = PBXGroup;
+            children = (A00000000000000000000020, A00000000000000000000021, A00000000000000000000022);
+            name = Products;
+            sourceTree = "<group>";
+        };
+        A00000000000000000000004 = {
+            isa = PBXFileSystemSynchronizedRootGroup;
+            exceptions = (A00000000000000000000008);
+            explicitFileTypes = {};
+            explicitFolders = ();
+            path = MusicPlayer;
+            sourceTree = "<group>";
+        };
+        A00000000000000000000005 = {
+            isa = PBXFileSystemSynchronizedRootGroup;
+            exceptions = ();
+            explicitFileTypes = {};
+            explicitFolders = ();
+            path = MusicPlayerTests;
+            sourceTree = "<group>";
+        };
+        A00000000000000000000006 = {
+            isa = PBXFileSystemSynchronizedRootGroup;
+            exceptions = ();
+            explicitFileTypes = {};
+            explicitFolders = ();
+            path = MusicPlayerUITests;
+            sourceTree = "<group>";
+        };
+        A00000000000000000000007 = {
+            isa = PBXFileReference;
+            lastKnownFileType = folder;
+            name = Skins;
+            path = MusicPlayer/Resources/Skins;
+            sourceTree = "SOURCE_ROOT";
+        };
+        A00000000000000000000008 = {
+            isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+            membershipExceptions = (Info.plist, "Resources/Skins/Dark/skin.json", "Resources/Skins/Dark/control-surface.png");
+            target = A00000000000000000000010;
+        };
+        A00000000000000000000009 = { isa = PBXBuildFile; fileRef = A00000000000000000000007; };
+        A00000000000000000000010 = {
+            isa = PBXNativeTarget;
+            buildConfigurationList = A00000000000000000000051;
+            buildPhases = (A00000000000000000000030, A00000000000000000000031, A00000000000000000000032);
+            buildRules = ();
+            dependencies = ();
+            fileSystemSynchronizedGroups = (A00000000000000000000004);
+            name = MusicPlayer;
+            packageProductDependencies = ();
+            productName = MusicPlayer;
+            productReference = A00000000000000000000020;
+            productType = "com.apple.product-type.application";
+        };
+        A00000000000000000000011 = {
+            isa = PBXNativeTarget;
+            buildConfigurationList = A00000000000000000000052;
+            buildPhases = (A00000000000000000000033, A00000000000000000000034, A00000000000000000000035);
+            buildRules = ();
+            dependencies = (A00000000000000000000040);
+            fileSystemSynchronizedGroups = (A00000000000000000000005);
+            name = MusicPlayerTests;
+            packageProductDependencies = ();
+            productName = MusicPlayerTests;
+            productReference = A00000000000000000000021;
+            productType = "com.apple.product-type.bundle.unit-test";
+        };
+        A00000000000000000000012 = {
+            isa = PBXNativeTarget;
+            buildConfigurationList = A00000000000000000000053;
+            buildPhases = (A00000000000000000000036, A00000000000000000000037, A00000000000000000000038);
+            buildRules = ();
+            dependencies = (A00000000000000000000041);
+            fileSystemSynchronizedGroups = (A00000000000000000000006);
+            name = MusicPlayerUITests;
+            packageProductDependencies = ();
+            productName = MusicPlayerUITests;
+            productReference = A00000000000000000000022;
+            productType = "com.apple.product-type.bundle.ui-testing";
+        };
+        A00000000000000000000020 = { isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MusicPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+        A00000000000000000000021 = { isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MusicPlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+        A00000000000000000000022 = { isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MusicPlayerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+        A00000000000000000000030 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+        A00000000000000000000031 = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+        A00000000000000000000032 = { isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (A00000000000000000000009); runOnlyForDeploymentPostprocessing = 0; };
+        A00000000000000000000033 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+        A00000000000000000000034 = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+        A00000000000000000000035 = { isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+        A00000000000000000000036 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+        A00000000000000000000037 = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+        A00000000000000000000038 = { isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+        A00000000000000000000040 = { isa = PBXTargetDependency; target = A00000000000000000000010; targetProxy = A00000000000000000000042; };
+        A00000000000000000000041 = { isa = PBXTargetDependency; target = A00000000000000000000010; targetProxy = A00000000000000000000043; };
+        A00000000000000000000042 = { isa = PBXContainerItemProxy; containerPortal = A00000000000000000000001; proxyType = 1; remoteGlobalIDString = A00000000000000000000010; remoteInfo = MusicPlayer; };
+        A00000000000000000000043 = { isa = PBXContainerItemProxy; containerPortal = A00000000000000000000001; proxyType = 1; remoteGlobalIDString = A00000000000000000000010; remoteInfo = MusicPlayer; };
+        A00000000000000000000050 = { isa = XCConfigurationList; buildConfigurations = (A00000000000000000000060, A00000000000000000000061); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+        A00000000000000000000051 = { isa = XCConfigurationList; buildConfigurations = (A00000000000000000000062, A00000000000000000000063); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+        A00000000000000000000052 = { isa = XCConfigurationList; buildConfigurations = (A00000000000000000000064, A00000000000000000000065); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+        A00000000000000000000053 = { isa = XCConfigurationList; buildConfigurations = (A00000000000000000000066, A00000000000000000000067); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+        A00000000000000000000060 = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+                CLANG_ENABLE_MODULES = YES;
+                CODE_SIGN_STYLE = Automatic;
+                COPY_PHASE_STRIP = NO;
+                DEBUG_INFORMATION_FORMAT = dwarf;
+                ENABLE_TESTABILITY = YES;
+                GCC_OPTIMIZATION_LEVEL = 0;
+                IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+                ONLY_ACTIVE_ARCH = YES;
+                SDKROOT = iphoneos;
+                SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+                SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+                SWIFT_STRICT_CONCURRENCY = complete;
+                SWIFT_VERSION = 6.0;
+                TARGETED_DEVICE_FAMILY = 1;
+            };
+            name = Debug;
+        };
+        A00000000000000000000061 = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+                CLANG_ENABLE_MODULES = YES;
+                CODE_SIGN_STYLE = Automatic;
+                COPY_PHASE_STRIP = NO;
+                DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+                IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+                SDKROOT = iphoneos;
+                SWIFT_COMPILATION_MODE = wholemodule;
+                SWIFT_OPTIMIZATION_LEVEL = "-O";
+                SWIFT_STRICT_CONCURRENCY = complete;
+                SWIFT_VERSION = 6.0;
+                TARGETED_DEVICE_FAMILY = 1;
+                VALIDATE_PRODUCT = YES;
+            };
+            name = Release;
+        };
+        A00000000000000000000062 = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+                CURRENT_PROJECT_VERSION = 1;
+                GENERATE_INFOPLIST_FILE = NO;
+                INFOPLIST_FILE = MusicPlayer/Info.plist;
+                LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks");
+                MARKETING_VERSION = 0.1;
+                PRODUCT_BUNDLE_IDENTIFIER = com.oliver.musicplayer;
+                PRODUCT_NAME = "$(TARGET_NAME)";
+                SOURCE_COMMIT_SHA = development;
+                SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+                SUPPORTS_MACCATALYST = NO;
+                SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+            };
+            name = Debug;
+        };
+        A00000000000000000000063 = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+                CURRENT_PROJECT_VERSION = 1;
+                GENERATE_INFOPLIST_FILE = NO;
+                INFOPLIST_FILE = MusicPlayer/Info.plist;
+                LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks");
+                MARKETING_VERSION = 0.1;
+                PRODUCT_BUNDLE_IDENTIFIER = com.oliver.musicplayer;
+                PRODUCT_NAME = "$(TARGET_NAME)";
+                SOURCE_COMMIT_SHA = development;
+                SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+                SUPPORTS_MACCATALYST = NO;
+                SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+            };
+            name = Release;
+        };
+        A00000000000000000000064 = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+                BUNDLE_LOADER = "$(TEST_HOST)";
+                GENERATE_INFOPLIST_FILE = YES;
+                LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@loader_path/Frameworks");
+                PRODUCT_BUNDLE_IDENTIFIER = com.oliver.musicplayer.tests;
+                PRODUCT_NAME = "$(TARGET_NAME)";
+                TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MusicPlayer.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MusicPlayer";
+            };
+            name = Debug;
+        };
+        A00000000000000000000065 = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+                BUNDLE_LOADER = "$(TEST_HOST)";
+                GENERATE_INFOPLIST_FILE = YES;
+                LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@loader_path/Frameworks");
+                PRODUCT_BUNDLE_IDENTIFIER = com.oliver.musicplayer.tests;
+                PRODUCT_NAME = "$(TARGET_NAME)";
+                TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MusicPlayer.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MusicPlayer";
+            };
+            name = Release;
+        };
+        A00000000000000000000066 = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+                GENERATE_INFOPLIST_FILE = YES;
+                LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@loader_path/Frameworks");
+                PRODUCT_BUNDLE_IDENTIFIER = com.oliver.musicplayer.uitests;
+                PRODUCT_NAME = "$(TARGET_NAME)";
+                TEST_TARGET_NAME = MusicPlayer;
+            };
+            name = Debug;
+        };
+        A00000000000000000000067 = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+                GENERATE_INFOPLIST_FILE = YES;
+                LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@loader_path/Frameworks");
+                PRODUCT_BUNDLE_IDENTIFIER = com.oliver.musicplayer.uitests;
+                PRODUCT_NAME = "$(TARGET_NAME)";
+                TEST_TARGET_NAME = MusicPlayer;
+            };
+            name = Release;
+        };
+    };
+    rootObject = A00000000000000000000001;
+}
