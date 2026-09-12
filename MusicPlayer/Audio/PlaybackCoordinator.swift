@@ -223,7 +223,8 @@ actor PlaybackCoordinator {
         // Session activation can synchronously deliver a route notification; never hold its latch here.
         if outputMode == .device { try AVAudioSession.sharedInstance().setActive(true) }
         if !engine.isRunning { try engine.start() }
-        startInhibition.withLock { inhibited in
+        // This synchronous closure stays on the actor; audio objects must not enter a Sendable closure.
+        startInhibition.withLockUnchecked { inhibited in
             guard !inhibited, file != nil else { state = .paused; return }
             player.play()
             state = .playing
