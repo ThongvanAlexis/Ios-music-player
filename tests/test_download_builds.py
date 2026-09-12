@@ -15,6 +15,7 @@ import sys
 import tempfile
 import unittest
 from unittest.mock import patch
+from urllib.parse import parse_qs, urlsplit
 import zipfile
 
 
@@ -46,7 +47,14 @@ def zip_bytes(members):
     destination = io.BytesIO()
     with zipfile.ZipFile(destination, "w", zipfile.ZIP_DEFLATED) as archive:
         for name, value in members:
-            archive.writestr(name, value)
+            if isinstance(name, str):
+                member = zipfile.ZipInfo(name)
+                # ZipInfo rewrites Windows separators during construction; preserve hostile raw names.
+                member.filename = name
+                member.orig_filename = name
+            else:
+                member = name
+            archive.writestr(member, value)
     return destination.getvalue()
 
 
@@ -57,8 +65,8 @@ def artifact_bytes(change_manifest=None, change_evidence=None, extra_members=(),
     info = {"CFBundleIdentifier": CONFIG["bundleIdentifier"],
             "MinimumOSVersion": CONFIG["deploymentTarget"],
             "CFBundleExecutable": CONFIG["appName"], "CFBundlePackageType": "APPL",
-            "CFBundleSupportedPlatforms": ["iPhoneOS"]}
-    # A minimal 64-bit arm64 Mach-O header identifies a device executable in this test.
+            "CFBundleSupportedPlatforms": ["iPhoneOS"], "BuildSourceSHA": SOURCE_SHA}
+    # A minimal 64-bit arm64 Mach-O header identifies an arm64 executable in this test.
     executable = struct.pack("<8I", 0xFEEDFACF, 0x0100000C, 0, 2, 0, 0, 0, 0)
     members = [(app_path + "Info.plist", plistlib.dumps(info)),
                (app_path + CONFIG["appName"], executable)]
@@ -125,7 +133,12 @@ class FakeRunner:
                 self.change_artifact(artifact)
             output = json.dumps({"total_count": 1, "artifacts": [artifact]}).encode()
         elif "/runs?" in endpoint:
-            output = json.dumps({"total_count": len(self.run_records), "workflow_runs": self.run_records}).encode()
+            query_by_name = parse_qs(urlsplit(endpoint).query)
+            page = int(next(iter(query_by_name["page"])))
+            page_size = int(next(iter(query_by_name["per_page"])))
+            start_index = (page - 1) * page_size
+            output = json.dumps({"total_count": len(self.run_records),
+                                 "workflow_runs": self.run_records[start_index:start_index + page_size]}).encode()
         elif endpoint.endswith("/runs/" + str(RUN_ID)):
             output = json.dumps(next(iter(self.run_records))).encode()
         else:
@@ -160,6 +173,9 @@ class RunSelectionTests(unittest.TestCase):
 
 class DownloadTests(unittest.TestCase):
     def setUp(self):
+        self.output_patch = patch("builtins.print")
+        self.print_mock = self.output_patch.start()
+        self.addCleanup(self.output_patch.stop)
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.project_dir = Path(self.temporary.name)
@@ -275,6 +291,111 @@ class DownloadTests(unittest.TestCase):
             with self.assertRaises(download_builds.DownloadError):
                 self.download(FakeRunner())
         self.assert_preserved()
+
+    def test_archive_count_and_expanded_size_limits_preserve_previous(self):
+        for key in ("maximumMembers", "maximumExpandedBytes", "maximumMemberBytes"):
+            with self.subTest(key=key):
+                config = copy.deepcopy(CONFIG)
+                config["downloadLimit"][key] = 1
+                with self.assertRaises(download_builds.DownloadError):
+                    download_builds.download_build(project_dir=self.project_dir, config=config, runner=FakeRunner())
+                self.assert_preserved()
+
+    def test_actual_ipa_source_sha_must_match_selected_run(self):
+        with zipfile.ZipFile(io.BytesIO(artifact_bytes())) as archive:
+            ipa = archive.read("artifact/" + CONFIG["ipaBasename"])
+        with zipfile.ZipFile(io.BytesIO(ipa)) as archive:
+            members = [(member.filename, archive.read(member)) for member in archive.infolist()]
+        for source_sha in (None, "b" * 40):
+            with self.subTest(source_sha=source_sha):
+                modified_members = []
+                for path, value in members:
+                    if path.endswith("/Info.plist"):
+                        info = plistlib.loads(value)
+                        info["BuildSourceSHA"] = source_sha or ""
+                        value = plistlib.dumps(info)
+                    modified_members.append((path, value))
+                with self.assertRaises(download_builds.DownloadError):
+                    self.download(FakeRunner(artifact_bytes(ipa_members=modified_members)))
+                self.assert_preserved()
+
+    def test_pagination_checks_all_pages_and_refuses_unbounded_selection(self):
+        runner = FakeRunner()
+        runner.run_records = [run_record(identifier=RUN_ID - 1), run_record()]
+        config = copy.deepcopy(CONFIG)
+        config["downloadLimit"]["apiPageSize"] = 1
+        config["downloadLimit"]["maximumApiPages"] = 1
+        with self.assertRaises(download_builds.DownloadError):
+            download_builds.download_build(project_dir=self.project_dir, config=config, runner=runner)
+        self.assert_preserved()
+        config["downloadLimit"]["maximumApiPages"] = 2
+        published_dir = download_builds.download_build(project_dir=self.project_dir, config=config, runner=runner,
+                                                       requested_sha=SOURCE_SHA)
+        self.assertTrue((published_dir / "artifact" / CONFIG["ipaBasename"]).is_file())
+        self.assertTrue(any("page=2" in call[0][2] for call in runner.calls))
+        self.assertTrue(any("head_sha=" + SOURCE_SHA in call[0][2] for call in runner.calls))
+
+    def test_changed_previously_published_content_is_never_overwritten(self):
+        runner = FakeRunner()
+        published_dir = self.download(runner)
+        ipa_filename = published_dir / "artifact" / CONFIG["ipaBasename"]
+        ipa_filename.write_bytes(b"locally changed IPA")
+        with self.assertRaises(download_builds.DownloadError):
+            self.download(runner)
+        self.assertEqual(ipa_filename.read_bytes(), b"locally changed IPA")
+        self.assertEqual(self.old_filename.read_bytes(), b"previous usable IPA")
+
+    def test_missing_configuration_is_reported_without_traceback_or_raw_error(self):
+        with patch.object(download_builds.native_check, "read_json", side_effect=FileNotFoundError("secret-token")):
+            error_output = io.StringIO()
+            with patch.object(sys, "argv", ["download_builds.py"]), patch.object(sys, "stderr", error_output):
+                self.assertEqual(download_builds.main(), 1)
+            message = self.print_mock.call_args.args[0]
+            self.assertIn("Download failed:", message)
+            self.assertNotIn("Traceback", message)
+            self.assertNotIn("secret-token", message)
+            self.assert_preserved()
+
+    @unittest.skipUnless(os.name == "nt", "Windows junction creation requires cmd.exe")
+    def test_windows_junction_output_is_rejected_without_writing_through_it(self):
+        with tempfile.TemporaryDirectory() as external_dir:
+            junction_dir = self.project_dir / "linked-download"
+            result = subprocess.run(["cmd.exe", "/d", "/c", "mklink", "/J", str(junction_dir), external_dir],
+                                    capture_output=True, timeout=CONFIG["timeoutByCommand"]["query"])
+            self.assertEqual(result.returncode, 0, result.stderr)
+            try:
+                config = copy.deepcopy(CONFIG)
+                config["downloadRelativeDir"] = junction_dir.name
+                with self.assertRaises(download_builds.DownloadError):
+                    download_builds.download_build(project_dir=self.project_dir, config=config, runner=FakeRunner())
+                self.assertEqual(list(Path(external_dir).iterdir()), [])
+                self.assert_preserved()
+            finally:
+                junction_dir.rmdir()
+
+
+class StreamingProcessTests(unittest.TestCase):
+    def test_actual_process_timeout_kills_child(self):
+        with tempfile.TemporaryDirectory() as temporary_dir:
+            with (Path(temporary_dir) / "stdout.bin").open("wb") as destination:
+                with patch.object(download_builds.subprocess, "Popen", wraps=subprocess.Popen) as spawn:
+                    with self.assertRaises(subprocess.TimeoutExpired):
+                        download_builds.bounded_process(
+                            [sys.executable, "-c", "import time; time.sleep(30)"], cwd=temporary_dir,
+                            stdout=destination, stderr=subprocess.DEVNULL, timeout=0.1,
+                            maximum_output_bytes=CONFIG["downloadLimit"]["maximumJsonBytes"], poll_seconds=0.01)
+                    self.assertTrue(spawn.called)
+            # A closed output handle also confirms the killed process released its redirected file.
+            (Path(temporary_dir) / "stdout.bin").unlink()
+
+    def test_actual_process_output_limit_stops_stream(self):
+        with tempfile.TemporaryDirectory() as temporary_dir:
+            with (Path(temporary_dir) / "stdout.bin").open("wb") as destination:
+                with self.assertRaises(download_builds.DownloadError):
+                    download_builds.bounded_process(
+                        [sys.executable, "-c", "import sys,time; sys.stdout.buffer.write(b'x'*4096); sys.stdout.flush(); time.sleep(30)"],
+                        cwd=temporary_dir, stdout=destination, stderr=subprocess.DEVNULL,
+                        timeout=CONFIG["timeoutByCommand"]["query"], maximum_output_bytes=1024, poll_seconds=0.01)
 
 
 class LauncherTests(unittest.TestCase):

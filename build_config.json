@@ -24,7 +24,9 @@
   "derivedDataRelativeDir": "build/DerivedData",
   "retentionDays": 14,
   "jobTimeoutMinutes": 45,
-  "timeoutByCommand": {"query": 60, "build": 1200, "test": 900, "simulator": 180},
+  "timeoutByCommand": {"query": 60, "download": 300, "build": 1200, "test": 900, "simulator": 180},
+  "downloadRelativeDir": "GH_builds",
+  "downloadLimit": {"apiPageSize": 100, "maximumApiPages": 10, "maximumJsonBytes": 16777216, "maximumArchiveBytes": 1073741824, "maximumExpandedBytes": 2147483648, "maximumMemberBytes": 1073741824, "maximumMembers": 50000, "streamChunkBytes": 1048576, "processPollSeconds": 0.1},
   "requiredTestSuites": ["MusicPlayerTests/NativeTracerTests", "MusicPlayerUITests/NativeTracerUITests"],
   "fixture": {"basename": "native-tracer.wav", "sampleRate": 48000, "durationSeconds": 12, "frequencyHertz": 440, "amplitude": 4096},
   "requiredResourcePaths": ["Skins/Dark/skin.json", "Skins/Dark/control-surface.png"]

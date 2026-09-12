@@ -1,6 +1,7 @@
 /ref_pics/
 /.planning/research/.cache/
 /build/
+/GH_builds/
 __pycache__/
 *.pyc
 DerivedData/
