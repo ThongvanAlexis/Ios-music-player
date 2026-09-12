@@ -9,7 +9,15 @@ created: "2026-09-12"
 
 # Phase 1 — Validation Strategy
 
-Planning is not test execution. All 20 plans and 28 tasks below are pending. No app, Xcode result, codec measurement, installation or physical output check is claimed to exist yet.
+All 20 plans remain incomplete. The first app slice, native tests and build tooling are authored and locally reviewed. Xcode execution, codec measurements, installation and physical output checks remain pending.
+
+## Execution evidence recorded on 2026-09-12
+
+- Python 3.14.3: `python -m unittest discover -s tests -p test_native_check.py -v` passed 23 tests. These exercise build tooling, copied mock evidence rejection, packaging and cross-file build configuration agreement; they do not execute Swift or prove audio behavior.
+- `python -m py_compile scripts/native_check.py tests/test_native_check.py` and `git diff --check` passed.
+- The native acceptance command exited 1 on Windows with the expected macOS/Xcode requirement. Native RED/GREEN behavior remains unrun, not passed or meaningfully failed.
+- The evidence-only command reports missing `build/native-evidence.json`. No actual macOS run or report exists yet.
+- Plan 01 is paused at its user-only push checkpoint. Task 1 source is prepared; Task 1 native acceptance and Task 2 evidence remain pending together. No requirement is marked complete.
 
 ## Test infrastructure and command preparation
 
@@ -32,7 +40,7 @@ The wrapper resolves HEAD through git rev-parse, requires source identity, recor
 
 | Task | Wave | Requirement coverage | Behavior | Automated command | Status |
 |---|---|---|---|---|---|
-| 01-01-T1 | 1 | APP-01, APP-02, BUILD-01, LIB-01, PLAY-01, PLAY-06, SKIN-01 | Wire one app-owned WAV from Files through real persistence and audio | `python3 scripts/native_check.py --suite NativeTracerTests --ui-suite NativeTracerUITests --release` | Pending |
+| 01-01-T1 | 1 | APP-01, APP-02, BUILD-01, LIB-01, PLAY-01, PLAY-06, SKIN-01 | Wire one app-owned WAV from Files through real persistence and audio | `python3 scripts/native_check.py --suite NativeTracerTests --ui-suite NativeTracerUITests --release` | Source prepared; native acceptance pending |
 | 01-01-T2 | 1 | APP-01, APP-02, BUILD-01, LIB-01, PLAY-01, PLAY-06, SKIN-01 | Have the user trigger the prepared build and collect native evidence | `python scripts/native_check.py --check-evidence build/native-evidence.json --expected-sha HEAD` | Pending; user action/physical evidence required |
 | 01-02-T1 | 2 | BUILD-01, LIB-01, APP-01 | Download the exact successful native build safely from Windows | `python -m unittest discover -s tests -p test_download_builds.py -v` | Pending |
 | 01-02-T2 | 2 | BUILD-01, LIB-01, APP-01 | Install the concrete artifact and observe Apple Devices transfers | `python scripts/native_check.py --check-evidence build/native-evidence.json --expected-sha HEAD` | Pending; user action/physical evidence required |

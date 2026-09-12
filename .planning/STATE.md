@@ -1,14 +1,14 @@
 ---
 gsd_state_version: "1.0"
 milestone: v1.0
-current_phase: 1
+current_phase: 01
 current_phase_name: Installable Native Player
-status: executing
-stopped_at: Phase 1 planned and reviewed
-last_updated: "2026-09-12T16:43:36.868Z"
+status: paused
+stopped_at: 01-01 source prepared; awaiting user push for native evidence
+last_updated: "2026-09-12T17:17:29.482Z"
 last_activity: 2026-09-12
-last_activity_desc: Phase 1 planned in 20 sequential plans with 28 tasks; independent plan review passed.
-state_head: 41237b0142fb84040bb2c2a1d52f0af327030700
+last_activity_desc: First native slice prepared and locally reviewed; awaiting user push and macOS evidence.
+state_head: cee7c66e05d18327700a30a627e59cc461ea965d
 progress:
   total_phases: 8
   completed_phases: 0
@@ -23,21 +23,22 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-12)
 
 **Core value:** Save a timestamp or passage in a long mix with one personal note, then return to that exact part reliably.
-**Current focus:** Execute Phase 1, starting with the native file-to-speaker tracer and the user's required macOS build trigger. Preserve the critical manual-Play rule after headphone disconnection.
+**Current focus:** Validate the prepared first native slice through the user-triggered macOS build. Keep route-loss playback inhibition and all unperformed native/device checks pending.
 
 ## Current Position
 
-Phase: 1 (Installable Native Player) — READY TO EXECUTE
-Plan: 1 of 20 pending; 0 completed
-Status: Ready to execute
-Last activity: 2026-09-12 - Phase 1 research, UI specification, validation strategy and 20 plans completed; independent review passed with no findings.
+Phase: 01 (Installable Native Player) — PAUSED AT USER BUILD CHECKPOINT
+Plan: 1 of 20
+Status: Paused at 01-01-T2: awaiting user push and native build evidence
+Last activity: 2026-09-12 — Native app and build tooling committed; 23 Python tooling tests passed; no native run exists yet.
 
 Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
 - Total plans completed: 0
-- Implementation and test execution: Not started
+- First native slice authored and locally reviewed; 23 Python tooling tests passed.
+- Native test execution, Release build and physical verification: Pending.
 - No duration, memory, or seek-accuracy measurements exist yet.
 
 ## Accumulated Context
@@ -61,7 +62,7 @@ See PROJECT.md for the complete record.
 
 ### Pending Todos
 
-- Execute Phase 1 from its reviewed plans; do not rerun initialization or discussion.
+- Resume 01-01-T2 after the user pushes the prepared commit. Inspect actual CI logs/evidence before completing Plan 01 or advancing to Plan 02.
 - Settle chain scope/order/completion and temporary-loop interaction when planning Phase 4.
 
 ### Blockers/Concerns
@@ -82,7 +83,7 @@ See PROJECT.md for the complete record.
 
 ## Session Continuity
 
-Last session: 2026-09-12T16:43:36.868Z
-Stopped at: Phase 1 planned and reviewed
-Resume file: .planning/phases/01-installable-native-player/01-01-PLAN.md
-Next action: Run $gsd-execute-phase 1.
+Last session: 2026-09-12T17:17:29.453Z
+Stopped at: 01-01 source prepared; awaiting user push for native evidence
+Resume file: .planning/phases/01-installable-native-player/.continue-here.md
+Next action: User pushes prepared main; agent inspects the matching macOS run and resumes from .continue-here.md. No new permission is needed for log inspection or local fixes.

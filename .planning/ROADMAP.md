@@ -267,7 +267,7 @@ Plans will be created during phase planning.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Installable Native Player | 0/20 | Ready to execute | - |
+| 1. Installable Native Player | 0/20 | In progress | - |
 | 2. Explorer-Style Folder Library | 0/TBD | Not started | - |
 | 3. Annotated Favorite Moments | 0/TBD | Not started | - |
 | 4. Waveform and Moment Playback Controls | 0/TBD | Not started | - |
@@ -294,4 +294,4 @@ Skins may change artwork and supported control appearance extensively but cannot
 These decisions refine accepted capabilities; they do not reopen confirmed default continuation or fixed-layout skins.
 
 ---
-*Created: 2026-09-12. No implementation phase has started.*
+*Created: 2026-09-12. Phase 1 implementation started; the first native build remains pending.*
