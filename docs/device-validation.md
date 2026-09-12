@@ -1,6 +1,6 @@
 # Native and physical validation
 
-No native build, simulator result, installation, USB transfer observation, or physical audio check has passed yet. Windows source checks and Python tooling tests do not supply those results.
+The native simulator suite and unsigned Release build passed on GitHub Actions for the source recorded below, including playback retry and clean SQLite teardown. Installation, USB transfer observations and physical audio checks remain pending.
 
 The prepared GitHub workflow builds the checked-in Xcode project using the toolchain in `build_config.json`. Repository instructions authorize agent pushes to trigger IPA builds. After a push, preserve the downloaded run's original artifact and validate a selected copy with:
 
@@ -14,21 +14,21 @@ The native acceptance command on macOS is:
 python3 scripts/native_check.py --suite NativeTracerTests --ui-suite NativeTracerUITests --release
 ```
 
-The tests are authored against real SQLite, generated PCM WAV files, the playback engine's actual rendered output, the transferred simulator file, and route-loss inhibition. Native RED and GREEN test executions remain pending: an unavailable Xcode command is not a failing behavior test. The first macOS run may reveal compiler or runtime issues that require another fix and push.
+The tests are authored against real SQLite, generated PCM WAV files, the playback engine's actual rendered output, the transferred simulator file, and route-loss inhibition. A successful native run is recorded below. Earlier Swift 6 compile failures were corrected; they do not constitute a meaningful failing behavior test. The native tests were not executed before implementation, so no native RED-before-GREEN result is claimed.
 
 | Build evidence | Recorded result |
 |---|---|
-| Tested source SHA | Pending |
-| Workflow run URL and run ID | Pending |
-| Runner image and macOS version | Pending |
-| Xcode version and build | Pending |
-| iPhone SDK and simulator runtime | Pending |
-| Simulator UUID | Pending |
-| Executed native test counts | Pending |
-| Executed UI test counts | Pending |
-| Result bundle location | Pending |
-| Unsigned IPA SHA-256 | Pending |
-| Native evidence validation | Pending |
+| Tested source SHA | 9115f759514b93a94f4f9856d986c0626ac4b3bd |
+| Workflow run URL and run ID | https://github.com/ThongvanAlexis/Ios-music-player/actions/runs/34710813866 |
+| Runner image and macOS version | 20260907.0351.1; macOS 26.6.2 (25G83), arm64 |
+| Xcode version and build | 26.6 / 17F113 |
+| iPhone SDK and simulator runtime | SDK 26.5; iOS 26.5 |
+| Simulator UUID | CB15797E-6053-40B1-BB72-7F30D005A4F2 |
+| Executed native test counts | 9 passed; zero failures or skips |
+| Executed UI test counts | 1 passed; zero failures or skips |
+| Result bundle location | build/results/20260912T181909Z-51a4696bd71f46fabae01a4bbc0f0601/NativeTests.xcresult |
+| Unsigned IPA SHA-256 | d379a6dee0861a2bbf68119dc873d021dc315db6b6088214fc7f28d905a515bb |
+| Native evidence validation | Passed on Windows against HEAD at the tested source above, before documentation closeout |
 
 The successful artifact includes the unsigned IPA, manifest, checksum, native evidence and result bundles. Failed native runs retain a separate diagnostic artifact. No signing credential is required by this workflow; the existing sideload setup signs the unsigned app at installation.
 
@@ -37,7 +37,7 @@ The successful artifact includes the unsigned IPA, manifest, checksum, native ev
 | Date and time in UTC | Pending |
 | iPhone model | Pending |
 | Installed iOS version | Pending |
-| Installed source SHA from app bundle `BuildSourceSHA` | Pending |
+| Installed artifact source SHA, matched to the selected IPA manifest | Pending |
 | IPA source run URL and checksum | Pending |
 | Sideload method | Pending |
 | Initial empty Files screen and silent launch | Pending |
@@ -67,3 +67,26 @@ Only a closed integer PCM WAV is playable in this first build. A stable size or 
 Error Details retains bounded messages during this app process, independently of playback success. Transfer parser observations survive relaunch in SQLite. A general diagnostic history across relaunch and the later full transport controls are not supplied by this first build.
 
 Preserve actual copied observation text and original run artifacts alongside the recorded results. Leave unperformed or unsuccessful checks pending with their observed error.
+
+The first phone session should follow this order:
+
+1. Install the prepared unsigned IPA through the existing iLoader/SideStore setup. Record its full source SHA, run ID and checksum, the installation result, and the iPhone model/iOS version. Open MusicPlayer and check that an empty Files screen is silent.
+2. In Apple Devices on Windows, select the iPhone and its file-sharing section, then MusicPlayer. Copy the prepared `build/device-probes/native-tracer.wav`, or an existing integer PCM WAV, as an individual file. Record whether the app was closed or open during copying.
+3. Open the app, refresh Files, and use the row's information button to copy File Details. Disconnect USB, tap the WAV row, and record whether sound is audible and the playback time advances. Terminate and reopen the app; confirm that the file remains and playback stays stopped.
+4. With larger WAV and MP3 files, repeat individual copies with the app closed and open. Bring the app forward during copying, refresh, and copy File Details before and after completion. Record whether a final filename is visible while its bytes are still arriving.
+5. Interrupt each large transfer by disconnecting USB, then record the remaining row, its File Details, and the result after relaunch. For MP3, retain the observed byte length so it can be checked against complete frame boundaries in the PC source. A frame-boundary prefix test remains pending until the actual bytes establish that boundary; a guessed disconnect time is insufficient.
+6. Reconnect and retry an interrupted transfer using the same filename. Then replace a completed file with different audio under that same filename. Copy the observations before and after each change, including resource identity, byte length, modification time and parsing revisions.
+7. Send the recorded outcomes and copied details. If the writer provides no reliable completion signal, keep the completion question open while choosing between explicit pending/unverified handling and an additional source-size/hash manifest step. Neither a stable file nor a fully decodable MP3 prefix establishes the intended source length.
+
+| Transfer experiment | WAV observations | MP3 observations |
+|---|---|---|
+| Copy with the app closed; open after completion | Pending | Pending |
+| Copy with the app open | Pending | Pending |
+| Bring the app forward during copying | Pending | Pending |
+| Disconnect USB during copying | Pending | Pending |
+| Interrupted copy ending at a complete MP3 frame boundary | Not applicable | Pending |
+| Relaunch after an interrupted copy | Pending | Pending |
+| Retry/overwrite an interrupted copy | Pending | Pending |
+| Replace completed audio under the same filename | Pending | Pending |
+
+For each cell, retain the Windows source filename and size, the app's actual relative location, the observation time, and the copied before/after details. A missing row or failed operation is also an observation; preserve its error rather than assuming completion. MP3 playback is not implemented in this initial build, so its transfer observations remain separate from audible WAV playback.
